@@ -19,7 +19,7 @@ If you do not wish to manage the geodata as part of the SAS repository as a subm
  to your data locations.
 
 Otherwise if you wish to manage the data as a submodule of the SAS repository, 
-simply perform the following steps:
+simply perform the following steps after the SAS repository cloning:
 
 ```
     # Get the actual data into a 'geo' submodule
@@ -28,6 +28,13 @@ simply perform the following steps:
 
 You should now see the `data/geo` folder with a bunch of zip files in the subfolders. 
 These files are not real zip files yet, but simple text trackers to the LFS (Large File Storage) storage.
+
+Alternatively to update the `data/geo` folder after the initial update, you can do:
+
+```
+    cd data/geo
+    git pull
+```
 
 ### Retrieving the raw files from LFS
 
