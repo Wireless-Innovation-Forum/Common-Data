@@ -1,6 +1,5 @@
 # SAS-Data
-
-This repository holds all data related to the [Wireless Innovvation Forum / Spectrum Access System](https://github.com/Wireless-Innovation-Forum/Spectrum-Access-System) GitHub repository,
+This is the repository found at [Wireless Innovation Forum](https://github.com/Wireless-Innovation-Forum/SAS-Data). It holds all data related to the [Wireless Innovation Forum / Spectrum Access System](https://github.com/Wireless-Innovation-Forum/Spectrum-Access-System) GitHub repository,
 which are stored in Git LFS (Large File storage).
 
 ## Data integration in SAS environment
@@ -89,7 +88,7 @@ Content for each tile:
   - floatnXXwYYY_std.flt : raw data in ArcFloat format.
 
 An updated version of some of the tiles are provided with the prefix usgs_ned_1_nXXwYYY_gridfloat_std: 
-this data corresponds to newer data gathering techniques (primarily LIDAR).
+these data correspond to newer data gathering techniques (primarily LIDAR).
 
 This reference data corresponds to a snapshot of the latest USGS data available from July 2017.
 
@@ -113,9 +112,9 @@ using the set of following (provided) scripts:
  - `src/data/retrieve_orig_nlcd.py`: retrieve the original 2014 NLCD data
  - `src/data/retile_nlcd.py`: retile the data into 1x1 degrees tiles with grid point at multiple of 1 arcsecond.
 
-The retiled data can be read by the NLCD driver found in harness/src/reference_models/geo/nlcd.py, and displayed in any GIS tool.
+The retiled data can be read by the NLCD driver found in harness/src/reference_models/geo/nlcd.py.
 
-Header files are provided for enabling the data to be displayed on any GIS tool.
+They can be displayed in any GIS tool, thanks to header files provided for georeferencing.
 
 Note: because SAS is defined to use NLCD only at multiple of 1 arcseconds (for PPA/WISP zones mainly), the present retiling 
 does not loose information compared to the original geodata in the original Albers projection.
