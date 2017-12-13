@@ -33,8 +33,7 @@ Then pull the data (ie fetch and checkout):
 
 ### Extracting the zip files
 
-To actually unzip the tiles, you can use the provided script 'extract_geo.py' (also found 
-for reference in the `src/data/` folder of the Spectrum-Access-Systems repository).
+To actually unzip the tiles, you can use the provided script 'extract_geo.py':
 
 ```
     python extract_geo.py
@@ -48,8 +47,8 @@ One way is to specify the location of your NED and NLCD data location in the fil
 `src/harness/reference_models/geo/CONFIG.py` of the main Spectrum-Access-Systems repository.
 (See: https://github.com/Wireless-Innovation-Forum/Spectrum-Access-System/blob/master/src/harness/reference_models/geo/CONFIG.py).
 
-Another possibility is to move the extracted files into a folder data/geo/ned/ and data/geo/nlcd
-of the main repository.
+Another possibility is to move the extracted files into a folder `data/geo/ned/` and `data/geo/nlcd`
+of the main repository (default target of the CONFIG.py file).
 
 
 ## NED Terrain data
