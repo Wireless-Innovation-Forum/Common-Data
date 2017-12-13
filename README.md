@@ -4,36 +4,16 @@ which are stored in Git LFS (Large File storage).
 
 ## Data integration in SAS environment
 
-The SAS repository integrates these data as a submodule in `data/geo/`.
-
-### Integrating the submodule
-If you are already in the SAS code repository and see this file, it means that the submodule
-has already been integrated and you do not need to perform this step.
-
-If you do not wish to manage the geodata as part of the SAS repository as a submodule:
-
- - you can ignore this step and go directly to next steps about LFS data fetching
- and zip extraction.
- - make sure the `src/harness/reference_models/geo/CONFIG.py` settings point
- to your data locations.
-
-Otherwise if you wish to manage the data as a submodule of the SAS repository, 
-simply perform the following steps after the SAS repository cloning:
+### Cloning the repository
+Clone this repository using GIT.
 
 ```
-    # Get the actual data into a 'geo' submodule
-    git submodule update --init
+    git clone https://github.com/Wireless-Innovation-Forum/SAS-Data.git
 ```
 
-You should now see the `data/geo` folder with a bunch of zip files in the subfolders. 
-These files are not real zip files yet, but simple text trackers to the LFS (Large File Storage) storage.
+In case you do not have GIT LFS already installed and enabled, these files are not real
+zip files yet, but simple text trackers to the LFS (Large File Storage) storage.
 
-Alternatively to update the `data/geo` folder after the initial update, you can do:
-
-```
-    cd data/geo
-    git pull
-```
 
 ### Retrieving the raw files from LFS
 
@@ -45,37 +25,31 @@ To actually get the real data stored in LFS, you need to perform:
     
 ```
 
-Then go to the geo directory, and pull the data (ie fetch and checkout):
+Then pull the data (ie fetch and checkout):
 
 ```
-    cd data/geo
     git lfs pull
 ```
 
 ### Extracting the zip files
 
-To actually unzip the tiles, you can use the script provided in `src/data/`:
+To actually unzip the tiles, you can use the provided script 'extract_geo.py' (also found 
+for reference in the `src/data/` folder of the Spectrum-Access-Systems repository).
 
 ```
     python extract_geo.py
 ```
 
-### Managing things
+This will extract all the zip files in place.
 
-To disable Git LFS and avoid any future pull on the data:
+### Plugging the data to the SAS code
 
-```
-    git lfs uninstall
-```
+One way is to specify the location of your NED and NLCD data location in the file
+`src/harness/reference_models/geo/CONFIG.py` of the main Spectrum-Access-Systems repository.
+(See: https://github.com/Wireless-Innovation-Forum/Spectrum-Access-System/blob/master/src/harness/reference_models/geo/CONFIG.py).
 
-To remove the geodata submodule entirely, if you decide to move it elsewhere, you can use:
-
-```
-    git submodule deinit --all
-```
-
-In that case, make also sure to specify the location of your final data location in the file
-`src/harness/reference_models/geo/CONFIG.py`.
+Another possibility is to move the extracted files into a folder data/geo/ned/ and data/geo/nlcd
+of the main repository.
 
 
 ## NED Terrain data
