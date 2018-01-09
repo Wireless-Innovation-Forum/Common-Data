@@ -2,6 +2,12 @@
 This is the repository found at [Wireless Innovation Forum](https://github.com/Wireless-Innovation-Forum/SAS-Data). It holds all data related to the [Wireless Innovation Forum / Spectrum Access System](https://github.com/Wireless-Innovation-Forum/Spectrum-Access-System) GitHub repository,
 which are stored in Git LFS (Large File storage).
 
+## WARNING
+
+The full data is about 50GB in size. Because of quota limitation, please only clone when necessary. 
+If cloning fails, it can be that the transfer quota has been reached for the month. In that case, please contact:
+  https://github.com/LeePucker
+
 ## Data integration in SAS environment
 
 ### Cloning the repository
