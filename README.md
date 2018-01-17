@@ -8,6 +8,9 @@ The full data is about 50GB in size. Because of quota limitation, please only cl
 If cloning fails, it can be that the transfer quota has been reached for the month. In that case, please contact:
   https://github.com/LeePucker
 
+The recommended way to obtain the data is to use GIT. Any other method such as direct download from GitHub website is not
+insured to give proper results, and you can end up only with small tracker text files. In that case, see section below "Retrieving the raw files from LFS" to recover the full binary files using GIT command line.
+
 ## Data integration in SAS environment
 
 ### Cloning the repository
