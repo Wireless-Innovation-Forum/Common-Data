@@ -101,5 +101,15 @@ They can be displayed in any GIS tool, thanks to header files provided for geore
 Note: because SAS is defined to use NLCD only at multiple of 1 arcseconds (for PPA/WISP zones mainly), the present retiling 
 does not loose information compared to the original geodata in the original Albers projection.
 
+## USGS Census Tract data
+
+The `censusTract/` folder contains all the newest (2017) USGS TIGER/Line census tract data in geojson format. The original data from the official USGS site (ftp://ftp2.census.gov/geo/tiger/TIGER2017/TRACT/) are
+
+1. of the zipped shapefile format and
+2. one state per zip file
+
+The geojosn data is converted from these original files and maintained as one census tract per json file for easy use. The file name of each file is a number string composed from the fips codes of the corresponding census tract, e.g.
+
+file "28049003300.json", is for the census tract with "STATEFP" = "28","COUNTYFP" = "049" and "TRACTCE" = "003300". The whole name string "28049003300" is also called "GEOID" in the census tract data properties. 
 
 
