@@ -4,7 +4,7 @@ which are stored in Git LFS (Large File storage).
 
 ## WARNING
 
-The full data is about 50GB in size. Because of quota limitation, please only clone when necessary. 
+The full data is about 52GB in size. Because of quota limitation, please only clone when necessary. 
 If cloning fails, it can be that the transfer quota has been reached for the month. In that case, please contact:
   https://github.com/LeePucker
 
@@ -40,15 +40,25 @@ Then pull the data (ie fetch and checkout):
     git lfs pull
 ```
 
-### Extracting the zip files
+### Extracting the ned and nlcd zip files
 
-To actually unzip the tiles, you can use the provided script 'extract_geo.py':
+To actually unzip the ned and nlcd tiles, you can use the provided script 'extract_geo.py':
 
 ```
     python extract_geo.py
 ```
 
-This will extract all the zip files in place.
+This will extract all the ned and nlcd zip files in place.
+
+### Extracting the census tract zip file
+
+To actually unzip the census tract json files from the zip file, you can use the provided script 'extract_census.py':
+
+```
+    python extract_census.py
+```
+
+This will extract all the census tract json files from the zip file in place.
 
 ### Plugging the data to the SAS code
 
@@ -56,7 +66,7 @@ One way is to specify the location of your NED and NLCD data location in the fil
 `src/harness/reference_models/geo/CONFIG.py` of the main Spectrum-Access-Systems repository.
 (See: https://github.com/Wireless-Innovation-Forum/Spectrum-Access-System/blob/master/src/harness/reference_models/geo/CONFIG.py).
 
-Another possibility is to move the extracted files into a folder `data/geo/ned/` and `data/geo/nlcd`
+Another possibility is to move the extracted files into a folder `data/geo/ned/`,`data/geo/nlcd` and `data/geo/census`
 of the main repository (default target of the CONFIG.py file).
 
 
@@ -102,4 +112,12 @@ Note: because SAS is defined to use NLCD only at multiple of 1 arcseconds (for P
 does not loose information compared to the original geodata in the original Albers projection.
 
 
+## USGS Census Tract Data
 
+The `census/` folder contains the data for the most up-to-date (2017) USGS Census tract data in geojson format.
+
+All the USGS census tract data are stored in one census tarct per file in geojson format with the file name being the fips code (aka. GEOID in the census tract data term) of the corresponding census tract. For example, for a census tract with "STATEFP"="12","COUNTYFP"="057","TRACTCE"="013312","GEOID"="12057013312", the file name is 12057013312.json.
+
+They can be displayed in any web site with geojson display capability.
+
+Census tract data is used for calculations in, for example, PPA reference model.
