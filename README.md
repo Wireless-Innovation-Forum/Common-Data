@@ -1,6 +1,7 @@
 # SAS-Data
-This is the repository found at [Wireless Innovation Forum](https://github.com/Wireless-Innovation-Forum/SAS-Data). It holds all data related to the [Wireless Innovation Forum / Spectrum Access System](https://github.com/Wireless-Innovation-Forum/Spectrum-Access-System) GitHub repository,
-which are stored in Git LFS (Large File storage).
+This is the repository found at [Wireless Innovation Forum](https://github.com/Wireless-Innovation-Forum/SAS-Data). 
+It holds all data related to the [Wireless Innovation Forum / Spectrum Access System](https://github.com/Wireless-Innovation-Forum/Spectrum-Access-System) 
+GitHub repository, which are stored in Git LFS (Large File storage).
 
 ## WARNING
 
@@ -9,7 +10,8 @@ If cloning fails, it can be that the transfer quota has been reached for the mon
   https://github.com/LeePucker
 
 The recommended way to obtain the data is to use GIT. Any other method such as direct download from GitHub website is not
-insured to give proper results, and you can end up only with small tracker text files. In that case, see section below "Retrieving the raw files from LFS" to recover the full binary files using GIT command line.
+insured to give proper results, and you can end up only with small tracker text files. 
+In that case, see section below "Retrieving the raw files from LFS" to recover the full binary files using GIT command line.
 
 ## Data integration in SAS environment
 
@@ -66,7 +68,12 @@ One way is to specify the location of your NED and NLCD data location in the fil
 `src/harness/reference_models/geo/CONFIG.py` of the main Spectrum-Access-Systems repository.
 (See: https://github.com/Wireless-Innovation-Forum/Spectrum-Access-System/blob/master/src/harness/reference_models/geo/CONFIG.py).
 
-Another possibility is to move the extracted files into a folder `data/geo/ned/`,`data/geo/nlcd` and `data/geo/census`
+Another way (recommended) is to create soft links (with unix command `ln -s`) in the main SAS repository:
+   - `data/geo/ned/`  pointing to `SAS-Data/ned/`
+   - `data/geo/nlcd/`  pointing to `SAS-Data/nlcd/`
+   - `data/census_tracts/` pointing to `SAS-Data/census/`
+
+Last option is to move the extracted files into a folder `data/geo/ned/`,`data/geo/nlcd` and `data/census_tracts`
 of the main repository (default target of the CONFIG.py file).
 
 
@@ -121,3 +128,13 @@ All the USGS census tract data are stored in one census tarct per file in geojso
 They can be displayed in any web site with geojson display capability.
 
 Census tract data is used for calculations in, for example, PPA reference model.
+
+## Notes relating to adding new files
+
+To add or update existing files to the SAS-Data LFS repository:
+ 
+  - copy the new zip files where they belong
+  - make sure LFS is activated: `git lfs install`
+  - git add *.zip
+  - git commit
+  - git push
