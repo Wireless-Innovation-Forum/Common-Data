@@ -1,1 +1,2 @@
 census/*.zip filter=lfs diff=lfs merge=lfs -text
+census-2017/*.zip filter=lfs diff=lfs merge=lfs -text
