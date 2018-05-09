@@ -121,7 +121,7 @@ does not loose information compared to the original geodata in the original Albe
 
 ## USGS Census Tract Data
 
-The `census/` folder contains the data for the most up-to-date (2017) USGS Census tract data in geojson format.
+The `census/` folder contains the data for the 2010 USGS Census tract data in geojson format. the 2010 census tract data is required as per the FCC rule part.96 requirements.
 
 All the USGS census tract data are stored in one census tarct per file in geojson format with the file name being the fips code (aka. GEOID in the census tract data term) of the corresponding census tract. For example, for a census tract with "STATEFP"="12","COUNTYFP"="057","TRACTCE"="013312","GEOID"="12057013312", the file name is 12057013312.json.
 
