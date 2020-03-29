@@ -100,12 +100,13 @@ Header files are provided for enabling the data to be displayed on any GIS tool.
 
 The `nlcd/` folder contains the data for the USGS NLCD (National Land Cover Data), retiled in 1x1 degrees tile with grid every 1 arcsecond. See:  https://www.mrlc.gov/nlcd11_data.php
 
+
 Content for each tile:
 
   - nlcd_nXXwYYY_ref.[prj,hdr] : geo referencing header files
   - nlcd_nXXwYYY_ref.int : raw data
 
-This reference data corresponds to a retiling operation of the original NLCD data snapshot of 2011 (re-released in 2014), 
+This reference data corresponds to a retiling operation of the original NLCD data snapshot of 2011 (re-released in 2014),
 using the set of following (provided) scripts:
 
  - `src/data/retrieve_orig_nlcd.py`: retrieve the original 2011 NLCD data
@@ -115,8 +116,16 @@ The retiled data can be read by the NLCD driver found in `harness/src/reference_
 
 They can be displayed in any GIS tool, thanks to header files provided for georeferencing.
 
-Note: because SAS is defined to use NLCD only at multiple of 1 arcseconds (for PPA/WISP zones mainly), the present retiling 
+Note: because SAS is defined to use NLCD only at multiple of 1 arcseconds (for PPA/WISP zones mainly), the present retiling
 does not loose information compared to the original geodata in the original Albers projection.
+
+### Case of Islands data
+
+An update was performed in 2020 by introducing missing data for
+Hawaii and Puerto Rico. The extraction generation script have been
+updated accordingly.
+
+Note: The data source is from 2001 with a reprocess in 2008.
 
 
 ## USGS Census Tract Data

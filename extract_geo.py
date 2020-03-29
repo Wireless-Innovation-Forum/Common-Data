@@ -45,9 +45,13 @@ def ExtractData(directory):
 geo_dir = os.path.dirname(os.path.realpath(__file__))
 
 ned_dir = os.path.join(geo_dir, 'ned')
-print 'Extracting NED data files from zip files in dir=%s' % ned_dir
+print('Extracting NED data files from zip files in dir=%s' % ned_dir)
 ExtractData(ned_dir)
 
 nlcd_dir = os.path.join(geo_dir, 'nlcd')
-print 'Extracting NLCD data files from zip files in dir=%s' % nlcd_dir
+print('Extracting NLCD data files from zip files in dir=%s' % nlcd_dir)
+ExtractData(nlcd_dir)
+
+nlcd_dir = os.path.join(geo_dir, 'nlcd', 'nlcd_islands')
+print('Extracting NLCD Islands data files from zip files in dir=%s' % nlcd_dir)
 ExtractData(nlcd_dir)
