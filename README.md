@@ -28,6 +28,9 @@ zip files yet, but simple text trackers to the LFS (Large File Storage) storage.
 
 ### Retrieving the raw files from LFS
 
+If not already done, install `git-lfs` for your architecture by referring to the GitHub LFS page:
+https://git-lfs.github.com/
+
 To actually get the real data stored in LFS, you need to perform:
 
 ```
