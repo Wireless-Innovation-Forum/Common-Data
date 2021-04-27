@@ -1,7 +1,7 @@
 # SAS-Data
-This is the repository found at [Wireless Innovation Forum](https://github.com/Wireless-Innovation-Forum/SAS-Data). 
-It holds all data related to the [Wireless Innovation Forum / Spectrum Access System](https://github.com/Wireless-Innovation-Forum/Spectrum-Access-System) 
-GitHub repository, which are stored in Git LFS (Large File storage).
+This is the repository found at [Wireless Innovation Forum](https://github.com/Wireless-Innovation-Forum/Common-Data). 
+It holds all data related to the [Wireless Innovation Forum / Spectrum Access System and Automated Frequency Coordination systems](https://github.com/Wireless-Innovation-Forum/Spectrum-Access-System, https://github.com/Wireless-Innovation-Forum/6-GHz-AFC) 
+GitHub repositories, which are stored in Git LFS (Large File storage).
 
 ## WARNING
 
@@ -10,8 +10,12 @@ If cloning fails, it can be that the transfer quota has been reached for the mon
   https://github.com/LeePucker
 
 The recommended way to obtain the data is to use GIT. Any other method such as direct download from GitHub website is not
-insured to give proper results, and you can end up only with small tracker text files. 
+ensured to give proper results, and you can end up only with small tracker text files. 
 In that case, see section below "Retrieving the raw files from LFS" to recover the full binary files using GIT command line.
+
+## NOTE
+
+The information below is generally in reference to 3.5 GHz SAS. Reference to 6 GHz AFC and corresponding source code will be added as the AFC repo is populated.
 
 ## Data integration in SAS environment
 
@@ -19,7 +23,7 @@ In that case, see section below "Retrieving the raw files from LFS" to recover t
 Clone this repository using GIT.
 
 ```
-    git clone https://github.com/Wireless-Innovation-Forum/SAS-Data.git
+    git clone https://github.com/Wireless-Innovation-Forum/Common-Data.git
 ```
 
 In case you do not have GIT LFS already installed and enabled, these files are not real
@@ -94,8 +98,8 @@ these data correspond to newer data gathering techniques (primarily LIDAR).
 
 This reference data corresponds to a snapshot of the latest USGS data available from July 2017.
 
-The data is read by the NED terrain driver found in `harness/src/reference_models/geo/terrain.py`, 
-and in particular is used by the reference propagation models in `harness/src/reference_models/propagation`.
+The data is read by the SAS NED terrain driver found in `harness/src/reference_models/geo/terrain.py`, 
+and in particular is used by the SAS reference propagation models in `harness/src/reference_models/propagation`.
 
 Header files are provided for enabling the data to be displayed on any GIS tool.
 
