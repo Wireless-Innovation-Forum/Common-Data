@@ -1,0 +1,6 @@
+include README.md
+include LICENSE
+
+## Add this if distributing executable
+##recursive-include winnf *.so
+##recursive-include winnf *.dll
