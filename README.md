@@ -72,16 +72,16 @@ To actually unzip the ned and nlcd tiles, you can use the provided script
 
 This will extract all the ned and nlcd zip files in place.
 
-### Extracting the census tract zip file
+### Extracting the county zip file
 
-To actually unzip the census tract json files from the zip file, you can use the 
-provided script `data/extract_census.py`:
+To only unzip the county json files from the zip file, you can use the 
+provided script `script/extract_counties_json.py`:
 
 ```
-    python extract_census.py
+    python extract_counties_json.py --extract
 ```
 
-This will extract all the census tract json files from the zip file in place.
+This will extract all counties json files from the zip file in place.
 
 
 ### Population data
@@ -114,10 +114,10 @@ This also means a specific process for plugging the geo data for use by these SA
 main SAS repository:
    - `data/geo/ned/`  pointing to `Common-Data/data/ned/`
    - `data/geo/nlcd/`  pointing to `Common-Data/data/nlcd/`
-   - `data/census_tracts/` pointing to `Common-Data/data/census/`
+   - `data/counties/` pointing to `Common-Data/data/counties/`
 
 + The last option is to copy (or move) the extracted files into a folder `data/geo/ned/`,
-`data/geo/nlcd` and `data/census_tracts` of the SAS repository (which are the default 
+`data/geo/nlcd` and `data/counties` of the SAS repository (which are the default 
 target of the CONFIG.py file).
 
 
@@ -130,7 +130,7 @@ It is best to use the provided drivers found in the [`winnf`](src/README.md) mod
 import winnf
 from winnf.geo import terrain
 from winnf.geo import nlcd
-from winnf.pop import census
+from winnf.pop import county
 
 # Initialize the module data location.
 winnf.SetGeoBaseDir('/winnforum/Common-Data/data')
@@ -138,7 +138,7 @@ winnf.SetGeoBaseDir('/winnforum/Common-Data/data')
 # Create drivers towards the geo data
 terrain_driver = terrain.TerrainDriver()
 nlcd_driver = nlcd.NlcdDriver()
-census_driver = census.CensusTractDriver()
+county_driver = county.CountyDriver()
 
 # Read the data.
 ned_data = terrain_driver.GetTerrainElevation(lats, lons)
@@ -201,19 +201,19 @@ The extraction generation script have been updated accordingly.
 Note: The data source is from 2001 with a reprocess in 2008.
 
 
-### USGS Census Tract Data
+### County Data
 
-The [data/census/](data/census) folder contains the data for the 2010 USGS Census tract data 
-in geojson format. The 2010 census tract data is required as per the FCC rule part.96 requirements.
+The [data/counties/] folder contains the data for the 2017 FCC county data 
+in geojson format. The 2017 county is required as per the FCC rule part.96 requirements.
 
-All the USGS census tract data are stored in one census tract per file in geojson format with
-the file name being the fips code (aka. GEOID in the census tract data term) of the 
-corresponding census tract. For example, for a census tract with "STATEFP"="12",
+All the county data are stored in one county per file in geojson format with
+the file name being the fips code (aka. GEOID in the coutny term) of the 
+corresponding county. For example, for a county with "STATEFP"="12",
 "COUNTYFP"="057","TRACTCE"="013312","GEOID"="12057013312", the file name is `12057013312.json`.
 
 They can be displayed in any web site with geojson display capability.
 
-Census tract data is used for calculations in, for example, PPA reference model.
+County data is used for calculations in, for example, PPA reference model.
 
 ## Adding new geo files
 
@@ -235,3 +235,16 @@ and generate the data that are provided by the `Common-Data` repository.
 You **DO NOT need** to run those scripts unless you want to verify the process.
 
 See the [scripts/README.md](scripts/README.md) file.
+
+## Counties
+The [data/counties/] folder contains the data for the 2017 defined using the United States Census Bureau’s 2017 counties 
+in geojson format. The 2017 county data is required as per the FCC rule part.96 requirements.
+
+All the county data are stored in one county per file in geojson format with
+the file name being the fips code (aka. GEOID in the county data term) of the 
+corresponding county. For example, for a county with "STATEFP"="12",
+"COUNTYFP"="057","TRACTCE"="013312","GEOID"="12057013312", the file name is `12057013312.json`.
+
+They can be displayed in any web site with geojson display capability.
+
+county data is used for calculations in, for example, PPA reference model.

@@ -4,7 +4,7 @@ import os
 _ZONES_DIR = None
 _NED_DIR = None
 _NLCD_DIR = None
-_CENSUS_DIR = None
+_COUNTY_DIR = None
 _POP_DIR = None
 
 
@@ -12,7 +12,7 @@ def SetGeoBaseDir(directory):
   SetZonesDir(os.path.join(directory, 'zones'))
   SetNedDir(os.path.join(directory, 'ned'))
   SetNlcdDir(os.path.join(directory, 'nlcd'))
-  SetCensusDir(os.path.join(directory, 'census'))
+  SetCountyDir(os.path.join(directory, 'counties'))
   SetPopDir(os.path.join(directory, 'pop'))
 
 def SetZonesDir(directory):
@@ -27,9 +27,9 @@ def SetNlcdDir(directory):
   global _NLCD_DIR
   _NLCD_DIR = directory
 
-def SetCensusDir(directory):
-  global _CENSUS_DIR
-  _CENSUS_DIR = directory
+def SetCountyDir(directory):
+  global _COUNTY_DIR
+  _COUNTY_DIR = directory
 
 def SetPopDir(directory):
   global _POP_DIR
@@ -45,8 +45,8 @@ def GetNedDir():
 def GetNlcdDir():
   return _NLCD_DIR
 
-def GetCensusDir():
-  return _CENSUS_DIR
+def GetCountyDir():
+  return _COUNTY_DIR
 
 def GetPopDir():
   return _POP_DIR
