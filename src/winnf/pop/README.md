@@ -1,8 +1,8 @@
 # Population related modules
 
-## Census tract query
+## County query
 
-The `census` module allows for querying the census tract database for a given FIPS code
+The `county` module allows for querying the county database for a given FIPS code
 and retrieve the corresponding geometries as JSON.
 
 

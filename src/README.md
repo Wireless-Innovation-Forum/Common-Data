@@ -25,7 +25,7 @@ It provides radio propagation modules such as:
 ### `pop` subpackage
 
 It provides population-related modules:
- * `census`: to read the census tracts database
+ * `county`: to read the county database
  * `usgs_pop`: access to population density from USGS population rasters
  
 See specific documentation in [`winnf/pop/README.md`](winnf/pop/README.md).
