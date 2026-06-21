@@ -49,7 +49,8 @@ The modern install is managed from the repository root with `uv`. It creates a
 local `.venv`, installs the package in editable mode, and builds the compiled
 ITM and E-Hata propagation extensions.
 
-Python 3.9 or newer is supported.
+Python 3.10 or newer is supported. Python 3.9 is no longer supported because
+current secure releases of key HTTP dependencies require Python 3.10 or newer.
 
 ```
 cd /path/to/Common-Data
@@ -67,7 +68,7 @@ The large terrain, land-cover, county, and population data files are not bundled
 into the Python package. They remain repository data files and should be
 downloaded with Git LFS as described in the top-level README.
 
-### Optional population raster support
+### Population raster downloads and optional GDAL support
 
 The `winnf.pop.usgs_pop` module requires `GDAL`/`osgeo`, which depends on the
 native GDAL library and headers. Because those native dependencies are
@@ -82,7 +83,8 @@ can still be used without this extra. The county population helper does not
 require `GDAL`.
 
 Population raster files can be downloaded from USGS ScienceBase with the
-top-level helper script:
+top-level helper script. The script queries ScienceBase by DOI, then lists or
+downloads the attached `pdenYYYY_block.zip` files:
 
 ```
 uv sync

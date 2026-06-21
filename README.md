@@ -128,10 +128,10 @@ Download and extract a specific year, usually 2010:
 uv run python scripts/download_population.py 2010
 ```
 
-The script downloads from the USGS ScienceBase item at
-https://www.sciencebase.gov/catalog/item/57753ebee4b07dd077c70868 and writes
-the zip file and extracted `pdenYYYY_block/` folder under [data/pop/](data/pop)
-by default.
+The script queries the ScienceBase API for DOI `doi:10.5066/F74J0C6M`, lists
+the attached `pdenYYYY_block.zip` files, and writes the selected zip file and
+extracted `pdenYYYY_block/` folder under [data/pop/](data/pop) by default. To
+query a different ScienceBase DOI, pass `--doi`.
 
 ### Data integration into SAS
 

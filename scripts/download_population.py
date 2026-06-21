@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 import zipfile
@@ -18,10 +19,26 @@ except ModuleNotFoundError as err:
       "Run `uv sync` or install `sciencebasepy`.") from err
 
 
-SCIENCEBASE_ITEM_ID = "57753ebee4b07dd077c70868"
+SCIENCEBASE_DOI = "doi:10.5066/F74J0C6M"
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DESTINATION = PROJECT_ROOT / "data" / "pop"
 POPULATION_FILE_RE = re.compile(r"^pden(?P<year>\d{4})_block\.zip$")
+
+
+def _sciencebase_item_for_doi(session, doi):
+  identifier = json.dumps({"type": "DOI", "key": doi}, separators=(",", ":"))
+  results = session.find_items({
+      "q": "",
+      "filter": f"itemIdentifier={identifier}",
+      "format": "json",
+      "max": 2,
+  })
+  items = results.get("items", [])
+  if not items:
+    raise SystemExit(f"No ScienceBase item was found for DOI {doi}.")
+  if len(items) > 1:
+    raise SystemExit(f"Multiple ScienceBase items were found for DOI {doi}.")
+  return session.get_item(items[0]["id"])
 
 
 def _population_files(item):
@@ -103,8 +120,12 @@ def parse_args():
       action="store_true",
       help="Disable sciencebasepy's download progress indicator.")
   parser.add_argument(
+      "--doi",
+      default=SCIENCEBASE_DOI,
+      help="ScienceBase item DOI to query for population raster files.")
+  parser.add_argument(
       "--item-id",
-      default=SCIENCEBASE_ITEM_ID,
+      default=None,
       help=argparse.SUPPRESS)
   return parser.parse_args()
 
@@ -113,13 +134,17 @@ def main():
   args = parse_args()
 
   session = SbSession()
-  item = session.get_item(args.item_id)
+  if args.item_id:
+    item = session.get_item(args.item_id)
+    item_source = f"ScienceBase item {args.item_id}"
+  else:
+    item = _sciencebase_item_for_doi(session, args.doi)
+    item_source = f"ScienceBase DOI {args.doi}"
   files = _population_files(item)
 
   if not files:
     raise SystemExit(
-        f"No population raster zip files were found on ScienceBase item "
-        f"{args.item_id}.")
+        f"No population raster zip files were found for {item_source}.")
 
   if args.year is None:
     _print_available(files)
