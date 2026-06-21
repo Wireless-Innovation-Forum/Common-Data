@@ -17,6 +17,7 @@
 The zipped tiles are stored in Git LFS under ned/ and nlcd/ folders.
 """
 
+import argparse
 import os
 import zipfile
 
@@ -25,6 +26,11 @@ import zipfile
 def UnzipNeededFiles(zip_filename, dest_dir):
   """Unzip all needed geo files from zip.
   """
+  if not zipfile.is_zipfile(zip_filename):
+    raise Exception(
+        '%s is not a valid zip file. If it is a Git LFS pointer, run '
+        '`git lfs pull --include="%s"` first.' %
+        (zip_filename, os.path.relpath(zip_filename)))
   zf = zipfile.ZipFile(zip_filename, 'r')
   for datfile in zf.infolist():
     if (datfile.filename.endswith('.int') or datfile.filename.endswith('.flt') or
@@ -41,17 +47,42 @@ def ExtractData(directory):
       # Check if already extracted
       UnzipNeededFiles(os.path.join(directory, f), directory)
 
-# Find the directory of this script.
-geo_dir = os.path.dirname(os.path.realpath(__file__))
 
-ned_dir = os.path.join(geo_dir, 'ned')
-print('Extracting NED data files from zip files in dir=%s' % ned_dir)
-ExtractData(ned_dir)
+def main():
+  parser = argparse.ArgumentParser(
+      description='Extract NED and NLCD zip files downloaded by Git LFS.')
+  parser.add_argument(
+      '--ned', action='store_true',
+      help='Extract NED terrain tiles from data/ned.')
+  parser.add_argument(
+      '--nlcd', action='store_true',
+      help='Extract NLCD land-cover tiles from data/nlcd.')
+  parser.add_argument(
+      '--nlcd-islands', action='store_true',
+      help='Extract NLCD island tiles from data/nlcd/nlcd_islands.')
+  args = parser.parse_args()
 
-nlcd_dir = os.path.join(geo_dir, 'nlcd')
-print('Extracting NLCD data files from zip files in dir=%s' % nlcd_dir)
-ExtractData(nlcd_dir)
+  extract_all = not (args.ned or args.nlcd or args.nlcd_islands)
 
-nlcd_dir = os.path.join(geo_dir, 'nlcd', 'nlcd_islands')
-print('Extracting NLCD Islands data files from zip files in dir=%s' % nlcd_dir)
-ExtractData(nlcd_dir)
+  # Find the directory of this script.
+  geo_dir = os.path.dirname(os.path.realpath(__file__))
+
+  if extract_all or args.ned:
+    ned_dir = os.path.join(geo_dir, 'ned')
+    print('Extracting NED data files from zip files in dir=%s' % ned_dir)
+    ExtractData(ned_dir)
+
+  if extract_all or args.nlcd:
+    nlcd_dir = os.path.join(geo_dir, 'nlcd')
+    print('Extracting NLCD data files from zip files in dir=%s' % nlcd_dir)
+    ExtractData(nlcd_dir)
+
+  if extract_all or args.nlcd_islands:
+    nlcd_dir = os.path.join(geo_dir, 'nlcd', 'nlcd_islands')
+    print('Extracting NLCD Islands data files from zip files in dir=%s' %
+          nlcd_dir)
+    ExtractData(nlcd_dir)
+
+
+if __name__ == '__main__':
+  main()

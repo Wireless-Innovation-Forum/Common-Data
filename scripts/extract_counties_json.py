@@ -28,10 +28,7 @@ import io
 import json
 import os
 import re
-import shapefile
-import sys
 import zipfile
-import shapely.geometry as sgeo
 from collections import OrderedDict
 
 
@@ -73,6 +70,13 @@ def json_pp_dumps(obj, **kw):
 
 def ConvertShapefilesToGeoJson(counties_directory):
   """Convert Shapefile to GeoJson."""
+  try:
+    import shapefile
+  except ImportError as err:
+    raise ImportError(
+        'Converting county shapefiles requires pyshp. Install it with '
+        '`uv add --dev pyshp` or `pip install pyshp`.') from err
+
   print("Convert the Shapefiles to GeoJson format")
 
   # Extract all files before convert to shapely.
@@ -123,6 +127,8 @@ def ConvertShapefilesToGeoJson(counties_directory):
 
 def SplitCountiesGeoJsonFile(counties_directory):
   """Split counties GeoJson file with mulitiple single file based on FISP Code."""
+  import shapely.geometry as sgeo
+
   try:
     print("\n" + "Splitting files..." + "\n")
     os.chdir(counties_directory)
@@ -175,12 +181,8 @@ if __name__ == '__main__':
   group.add_argument(
       '--extract', help='extract county files from zip to folder',
       dest='extract', action='store_true')
-  try:
-    args = parser.parse_args()
-    print(args)
-  except:
-    parser.print_help()
-    sys.exit(0)
+  args = parser.parse_args()
+  print(args)
 
   # Find the counties directory and
   # create the dest directory if not exists.

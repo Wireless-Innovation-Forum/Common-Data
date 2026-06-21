@@ -1,287 +1,265 @@
 # Common WInnForum Data & Libraries
 
-Repository location: https://github.com/Wireless-Innovation-Forum/Common-Data. 
+Repository location: https://github.com/Wireless-Innovation-Forum/Common-Data.
 
-This GitHub repository holds common data related to the Wireless Innovation Forum [Spectrum Access System](https://github.com/Wireless-Innovation-Forum/Spectrum-Access-System) and [Automated Frequency Coordination systems](https://github.com/Wireless-Innovation-Forum/6-GHz-AFC) projects, along with common libraries used to work with those data.
+This repository holds common data related to the Wireless Innovation Forum
+[Spectrum Access System](https://github.com/Wireless-Innovation-Forum/Spectrum-Access-System)
+and [Automated Frequency Coordination systems](https://github.com/Wireless-Innovation-Forum/6-GHz-AFC)
+projects, along with common Python libraries used to work with those data.
 
-Some of the larger geodata files are stored with Git LFS (Large File Storage) and require the setup described below.
-
-
-## WARNING
-
-The full checked-out data set is about 55 GB in size.
-Please clone the full data set only when needed.
-
-Git LFS objects are served from Cloudflare R2 through the Cloudflare Workers endpoint 
-
-If an LFS download fails with an object-not-found or access error, please contact:
-  https://github.com/glossner
-
-The recommended way to obtain the data is to use Git.
-Other methods, such as direct download from the GitHub website, are not guaranteed
-to work correctly, and may leave you with only small pointer text files.
-In that case, see section below "Retrieving the raw files from LFS" to recover
-the full binary files using the Git command line.
-
-
-## Library: `winnf` package
-
-A Python package is provided for reading and working with the geo data.
-This package provides a number of subpackages of interest for WInnForum projects.
-The package is installed from the repository root using `uv` and the root
-`pyproject.toml`; it does not package the large LFS data files.
-
-For a local developer install:
+Some of the larger geodata files are stored as Git LFS zip archives. Git LFS
+downloads those archives from Cloudflare R2 through the endpoint configured in
+[.lfsconfig](.lfsconfig):
 
 ```
-    uv sync
-    uv run python run_all_tests.py
+https://winnforum-lfs.winnforum.workers.dev/info/lfs
 ```
 
-See dedicated [src/README.md](src/README.md) for a complete description.
+Users do not normally download from Cloudflare directly. Use Git and Git LFS,
+then run the extraction scripts below.
 
 
-## Data retrieval
+## User guide
 
-### Cloning the repository
+### Get the data
+
+The full checked-out and extracted data set is about 55 GB. Clone the full data
+set only when needed.
+
 Install and enable Git LFS once per machine:
 
 ```
-    git lfs install
+git lfs install
 ```
 
-Clone this repository using Git:
+Clone the repository:
 
 ```
-    git clone https://github.com/Wireless-Innovation-Forum/Common-Data.git
+git clone https://github.com/Wireless-Innovation-Forum/Common-Data.git
+cd Common-Data
 ```
 
-If Git LFS is not already installed and enabled, the LFS-tracked files are not real
-zip files yet, but simple text pointers to the LFS storage.
-
-
-### Retrieving the raw files from LFS
-
-If not already done, install `git-lfs` for your architecture by referring to the Git LFS page:
-https://git-lfs.github.com/
-
-Then pull the data (i.e., fetch and checkout):
+Extract the NED terrain and NLCD land-cover files:
 
 ```
-    git lfs pull
+python data/extract_geo.py
 ```
 
-### Cloning without downloading all LFS data
-
-If you only need the source tree or a specific data directory, skip the automatic LFS download during clone:
+Extract the county GeoJSON files:
 
 ```
-    GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/Wireless-Innovation-Forum/Common-Data.git
-    cd Common-Data
+python scripts/extract_counties_json.py --extract
 ```
 
-Then pull only the directory you need:
+Do not use GitHub's "Download ZIP" button for this repository. It can leave
+large data files as small Git LFS pointer text files instead of real zip files.
+If an extraction script reports that a file is not a valid zip, run:
 
 ```
-    git lfs pull --include="data/specific-folder/*"
+git lfs pull
 ```
 
-Only LFS-tracked paths are affected by this command. In this repository, the
-large LFS-tracked ZIP files are under `data/ned/` and `data/nlcd/`.
+Then rerun the extraction command.
 
-Common examples:
+If an LFS download fails with an object-not-found or access error, please
+contact: https://github.com/glossner
 
-```
-    # NED terrain tiles
-    git lfs pull --include="data/ned/*"
+### Download only part of the data
 
-    # NLCD mainland tiles
-    git lfs pull --include="data/nlcd/*"
-
-    # NLCD mainland and island tiles
-    git lfs pull --include="data/nlcd/*,data/nlcd/nlcd_islands/*"
-```
-
-### Extracting the NED and NLCD zip files
-
-To actually unzip the NED and NLCD tiles, you can use the provided script
-`data/extract_geo.py`:
+If you only need the source tree or one data directory, skip the automatic LFS
+download during clone:
 
 ```
-    python data/extract_geo.py
+GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/Wireless-Innovation-Forum/Common-Data.git
+cd Common-Data
 ```
 
-This will extract all the NED and NLCD zip files in place.
-
-### Extracting the county zip file
-
-To only unzip the county GeoJSON files from the zip file, you can use the
-provided script `scripts/extract_counties_json.py`:
+Then pull and extract only the directory you need:
 
 ```
-    python scripts/extract_counties_json.py --extract
+# NED terrain tiles
+git lfs pull --include="data/ned/*"
+python data/extract_geo.py --ned
+
+# NLCD mainland tiles
+git lfs pull --include="data/nlcd/*"
+python data/extract_geo.py --nlcd
+
+# NLCD island tiles
+git lfs pull --include="data/nlcd/nlcd_islands/*"
+python data/extract_geo.py --nlcd-islands
 ```
 
-This will extract all county GeoJSON files from the zip file in place.
-
+Only LFS-tracked paths are affected by `git lfs pull --include`. In this
+repository, the large LFS-tracked zip files are under [data/ned/](data/ned) and
+[data/nlcd/](data/nlcd).
 
 ### Population data
 
-The population raster data are currently not provided, although the `usgs_pop` driver
-is provided as part of the `winnf` package.
+The population raster data are currently not provided, although the `usgs_pop`
+driver is provided as part of the `winnf` package.
 
-It is easy to integrate:
+To integrate population data:
 
-1. Download the population data (preferably pden_2010.zip) from:
-    https://www.sciencebase.gov/catalog/item/57753ebee4b07dd077c70868
+1. Download the population data, preferably `pden_2010.zip`, from:
+   https://www.sciencebase.gov/catalog/item/57753ebee4b07dd077c70868
 
-2. Unzip the data and put the `pden2010_block/` folder into the [`data/pop/`](data/pop) folder.
+2. Unzip the data and put the `pden2010_block/` folder into [data/pop/](data/pop).
 
+### Data integration into SAS
 
+Because the SAS project started before `Common-Data` was migrated into a
+standalone data and library repository, the Python modules that read and use the
+data are replicated within the SAS repository.
 
-## Data integration into SAS
+There are three common ways to plug the geo data into SAS:
 
-Because the SAS project was started before the `Common-Data` repository was migrated
-into a set of standalone modules+data, the python module that reads & use the data
-are replicated within the SAS repository. 
+- Specify the NED and NLCD data locations in
+  `src/harness/reference_models/geo/CONFIG.py` of the main
+  Spectrum-Access-System repository.
+  See https://github.com/Wireless-Innovation-Forum/Spectrum-Access-System/blob/master/src/harness/reference_models/geo/CONFIG.py.
 
-This also means a specific process for plugging the geo data for use by these SAS modules:
+- Create symbolic links in the main SAS repository:
+  - `data/geo/ned/` pointing to `Common-Data/data/ned/`
+  - `data/geo/nlcd/` pointing to `Common-Data/data/nlcd/`
+  - `data/counties/` pointing to `Common-Data/data/counties/`
 
-+ One way is to specify the location of your NED and NLCD data location in the file
-`src/harness/reference_models/geo/CONFIG.py` of the main Spectrum-Access-Systems repository.
-(See: https://github.com/Wireless-Innovation-Forum/Spectrum-Access-System/blob/master/src/harness/reference_models/geo/CONFIG.py).
+- Copy the extracted files into `data/geo/ned/`, `data/geo/nlcd/`, and
+  `data/counties/` in the SAS repository.
 
-+ Another recommended way is to create soft links (with unix command `ln -s`) in the 
-main SAS repository:
-   - `data/geo/ned/`  pointing to `Common-Data/data/ned/`
-   - `data/geo/nlcd/`  pointing to `Common-Data/data/nlcd/`
-   - `data/counties/` pointing to `Common-Data/data/counties/`
+### Data integration into 6GHz-AFC
 
-+ The last option is to copy (or move) the extracted files into a folder `data/geo/ned/`,
-`data/geo/nlcd` and `data/counties` of the SAS repository (which are the default 
-target of the CONFIG.py file).
-
-
-## Data integration into 6GHz-AFC
-
-It is best to use the provided drivers found in the [`winnf`](src/README.md) module.
+It is best to use the provided drivers found in the [`winnf`](src/README.md)
+module.
 
 ```python
-# Import the winnf modules.
 import winnf
 from winnf.geo import terrain
 from winnf.geo import nlcd
 from winnf.pop import county
 
-# Initialize the module data location.
 winnf.SetGeoBaseDir('/winnforum/Common-Data/data')
 
-# Create drivers towards the geo data
 terrain_driver = terrain.TerrainDriver()
 nlcd_driver = nlcd.NlcdDriver()
 county_driver = county.CountyDriver()
 
-# Read the data.
 ned_data = terrain_driver.GetTerrainElevation(lats, lons)
-etc...
 ```
 
+### NED terrain data
 
-## Data Description
-
-### NED Terrain data
-
-The [data/ned/](data/ned) folder contains the USGS National Elevation Data (NED) in 1x1 degrees tiles 
-with grid every 1 arcsecond.
+The [data/ned/](data/ned) folder contains the USGS National Elevation Data
+(NED) in 1x1 degree tiles with a grid every 1 arcsecond.
 
 Content for each tile:
 
-  - floatnXXwYYY_std.[prj,hdr] : geo referencing header files
-  - floatnXXwYYY_std.flt : raw data in ArcFloat format.
+- `floatnXXwYYY_std.[prj,hdr]`: geo-referencing header files
+- `floatnXXwYYY_std.flt`: raw data in ArcFloat format
 
-An updated version of some of the tiles are provided with the prefix usgs_ned_1_nXXwYYY_gridfloat_std: these data correspond to newer data gathering techniques (primarily LIDAR).
+Some updated tiles use the prefix
+`usgs_ned_1_nXXwYYY_gridfloat_std`; these data correspond to newer gathering
+techniques, primarily LIDAR.
 
-NOTE: This reference data corresponds to a snapshot of the latest USGS data available from July 2017.
+This reference data corresponds to a snapshot of the latest USGS data available
+from July 2017. It is read by the NED terrain driver in
+`src/winnf/geo/terrain.py` and used by the WInnForum reference propagation
+models in `src/winnf/propag`.
 
-The data is read by the NED terrain driver found in `src/winnf/geo/terrain.py`, 
-and in particular is used by the WInnForum reference propagation models in `src/winnf/propag`.
+### NLCD land-cover data
 
-Header files are provided for enabling the data to be displayed on any GIS tool.
-
-### NLCD Land Cover data
-
-The [data/nlcd/](data/nlcd/) folder contains the data for the USGS NLCD (National Land Cover Data), 
-retiled in 1x1 degrees tile with grid every 1 arcsecond. See:  https://www.mrlc.gov/nlcd11_data.php
-
+The [data/nlcd/](data/nlcd/) folder contains the USGS NLCD National Land Cover
+Data, retiled into 1x1 degree tiles with a grid every 1 arcsecond.
+See https://www.mrlc.gov/nlcd11_data.php.
 
 Content for each tile:
 
-  - nlcd_nXXwYYY_ref.[prj,hdr] : geo referencing header files
-  - nlcd_nXXwYYY_ref.int : raw data
+- `nlcd_nXXwYYY_ref.[prj,hdr]`: geo-referencing header files
+- `nlcd_nXXwYYY_ref.int`: raw data
 
-This reference data corresponds to a retiling operation of the original NLCD data snapshot 
-of 2011 (re-released in 2014), using the set of following (provided) scripts:
+This reference data corresponds to a retiling of the 2011 NLCD data snapshot,
+re-released in 2014. The scripts used to create it are documented in
+[scripts/](scripts/).
 
- - `scripts/retrieve_orig_nlcd.py`: retrieve the original 2011 NLCD data
- - `scripts/retile_nlcd.py`: retile the data into 1x1 degrees tiles with grid point at
- multiple of 1 arcsecond.
+Hawaii and Puerto Rico data were added in 2020. Those island data come from a
+2001 source with a reprocess in 2008.
 
-The retiled data can be read by the NLCD driver found in `src/winnf/geo/nlcd.py`.
+### County data
 
-They can be displayed in any GIS tool, thanks to header files provided for georeferencing.
+The [data/counties/](data/counties) folder contains the 2017 FCC county data in
+GeoJSON format. The 2017 county data are required for FCC Part 96 calculations.
 
-Note: because SAS is defined to use NLCD only at multiple of 1 arcseconds (for PPA/WISP zones
-mainly), the present retiling does not lose information compared to the original geodata
-in the original Albers projection.
-
-#### Case of Islands data
-
-An update was performed in 2020 by introducing missing data for Hawaii and Puerto Rico. 
-The extraction generation script have been updated accordingly.
-
-Note: The data source is from 2001 with a reprocess in 2008.
+County data are stored as one GeoJSON file per county. The file name is the
+county FIPS/GEOID code. For example, a county with `GEOID="12057013312"` is
+stored as `12057013312.json`.
 
 
-### County Data
+## Developer guide
 
-The [data/counties/] folder contains the 2017 FCC county data in GeoJSON format.
-The 2017 county data are required for FCC Part 96 calculations.
+### Python package
 
-All the county data are stored in one county per file in GeoJSON format with
-the file name being the fips code (aka. GEOID in the county data term) of the
-corresponding county. For example, for a county with "STATEFP"="12",
-"COUNTYFP"="057","TRACTCE"="013312","GEOID"="12057013312", the file name is `12057013312.json`.
+A Python package named `winnf` is provided for reading and working with the geo
+data. It is installed from the repository root using `uv` and the root
+[pyproject.toml](pyproject.toml). The package does not include the large LFS
+data files.
 
-They can be displayed in any website with GeoJSON display capability.
+For a local developer install:
 
-County data is used for calculations in, for example, PPA reference model.
+```
+uv sync
+uv run python run_all_tests.py
+```
 
-## Adding new geo files
+See [src/README.md](src/README.md) for the package details.
 
-To add or update existing files to the `Common-Data` LFS repository:
- 
-  - copy the new zip files where they belong, normally under `data/ned/` or `data/nlcd/`
-  - make sure LFS is activated: `git lfs install`
-  - verify that the file is covered by LFS attributes, for example:
-    `git check-attr filter -- data/ned/new_tile.zip`
-  - `git add path/to/file.zip`
-  - `git commit`
-  - `git push`
+### Build distributions
+
+To build the source distribution and wheel:
+
+```
+uv run python -m build
+```
+
+Do not run `setup.py` directly. It is used by the package build backend; `uv`
+will invoke it with the right build commands.
+
+### Optional GDAL support
+
+The `winnf.pop.usgs_pop` module requires `GDAL`/`osgeo`, which depends on the
+native GDAL library and headers. Because those native dependencies are
+platform-sensitive, GDAL is optional:
+
+```
+uv sync --extra pop
+```
+
+Without GDAL, population raster tests are skipped and the rest of the package
+can still be used.
+
+### Adding new geo files
+
+To add or update LFS-managed geo zip files:
+
+- Copy the new zip files where they belong, normally under `data/ned/` or
+  `data/nlcd/`.
+- Make sure LFS is activated: `git lfs install`.
+- Verify that the file is covered by LFS attributes, for example:
+  `git check-attr filter -- data/ned/new_tile.zip`.
+- Run `git add path/to/file.zip`.
+- Run `git commit`.
+- Run `git push`.
 
 The normal `git push` should upload required LFS objects. To explicitly upload
 objects referenced by the current commit, use:
 
 ```
-    git lfs push origin HEAD
+git lfs push origin HEAD
 ```
 
-## Scripts used for data creation
+### Data creation scripts
 
-A number of scripts are provided in the [`scripts/`](scripts/) folder. 
+Scripts in [scripts/](scripts/) document the process used to retrieve and
+generate the data provided by this repository. Users do not need to run those
+scripts unless they want to verify or reproduce the data creation process.
 
-These scripts are provided only for documenting exactly the process that was used to retrieve
-and generate the data that are provided by the `Common-Data` repository.
-
-You **DO NOT need** to run those scripts unless you want to verify the process.
-
-See the [scripts/README.md](scripts/README.md) file.
+See [scripts/README.md](scripts/README.md) for details.
