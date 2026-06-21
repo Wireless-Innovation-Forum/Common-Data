@@ -89,6 +89,9 @@ To build the source distribution and wheel:
 uv run python -m build
 ```
 
+Do not run `setup.py` directly. It is used by the package build backend; `uv`
+will invoke it with the right build commands.
+
 The wheel contains the Python code and compiled propagation extensions. It does
 not include the large Common-Data LFS data directories.
 

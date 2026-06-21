@@ -1,11 +1,22 @@
 import sys
-from distutils.sysconfig import get_config_vars
+from sysconfig import get_config_vars
+
+
+if __name__ == "__main__" and len(sys.argv) == 1:
+  print(
+      "setup.py is used by the PEP 517 build backend.\n"
+      "Use `uv sync` to install the package, "
+      "`uv run python run_all_tests.py` to test it, or "
+      "`uv run python -m build` to build distributions.",
+      file=sys.stderr,
+  )
+  raise SystemExit(2)
 
 from setuptools import Extension, setup
 
 
 def _remove_strict_prototypes():
-  """Remove a C-only compiler flag that distutils can add for C++ builds."""
+  """Remove a C-only compiler flag that Python can add for C++ builds."""
   cfg_vars = get_config_vars()
   for key, value in cfg_vars.items():
     if isinstance(value, str):
