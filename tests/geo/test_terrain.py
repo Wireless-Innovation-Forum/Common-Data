@@ -22,7 +22,7 @@ import numpy as np
 
 from winnf.geo import terrain
 
-TEST_DIR = os.path.join(os.path.dirname(__file__),'testdata', 'ned')
+TEST_DIR = os.path.join(os.path.dirname(terrain.__file__), 'testdata', 'ned')
 
 logging.disable(30)
 

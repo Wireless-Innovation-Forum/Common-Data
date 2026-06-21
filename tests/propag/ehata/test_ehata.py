@@ -55,7 +55,7 @@ def ReadTestInputs(filename):
 class TestEHata(unittest.TestCase):
 
   def setUp(self):
-    self.test_dir = os.path.join(os.path.dirname(__file__), 'its', 'test')
+    self.test_dir = os.path.join(os.path.dirname(ehata.__file__), 'its', 'test')
     self.test_profile_dir = os.path.join(self.test_dir, 'pfls')
     self.columns, self.tests = ReadTestInputs(
         os.path.join(self.test_dir, 'test-inputs-wfmod.csv'))

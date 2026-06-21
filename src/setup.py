@@ -8,7 +8,7 @@ setup(name='winnf',
       description='Winnforum Commons',
       author='Winnforum Authors',
       license='Apache 2.0',
-      python_requires='>=3.7',
+      python_requires='>=3.9',
       packages=find_packages(),
       #exclude=['*_test.py']),
       #include_package_data=True,  # Not working for some reason

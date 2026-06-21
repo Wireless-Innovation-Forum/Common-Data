@@ -22,7 +22,7 @@ import numpy as np
 
 from winnf.geo import nlcd
 
-TEST_DIR = os.path.join(os.path.dirname(__file__), 'testdata', 'nlcd')
+TEST_DIR = os.path.join(os.path.dirname(nlcd.__file__), 'testdata', 'nlcd')
 logging.disable(30)
 
 def UnzipTestDir(directory):

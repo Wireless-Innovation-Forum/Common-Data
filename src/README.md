@@ -1,6 +1,6 @@
-# `winnf`: The Winnforum common libraries
+# `winnf`: The WInnForum common libraries
 
-The `winnf` python package holds common Winnforum modules.
+The `winnf` Python package holds common WInnForum modules.
 
 ## Content
 This package provides a number of sub packages:
@@ -16,7 +16,7 @@ It also provides a bunch of modules of use in Winnforum projects:
  * `vincenty`: for geodesic computations
  * `utils`: a compilation of useful geo routines
 
-### `prop` subpackage
+### `propag` subpackage
 
 It provides radio propagation modules such as:
  * `itm`: the ITM (Longley-Rice) propagation model
@@ -45,85 +45,65 @@ winnf.SetGeoBaseDir('/winnforum/Common-Data/data')
 
 ## Installation instructions
 
-### Preliminary
+The modern install is managed from the repository root with `uv`. It creates a
+local `.venv`, installs the package in editable mode, and builds the compiled
+ITM and E-Hata propagation extensions.
 
-Only Python3 is officially supported.
+Python 3.9 or newer is supported.
 
-It is also recommended to use the `anaconda` python installer. You can use 
-either the `full` distribution (see https://www.anaconda.com/distribution/)
-or the `mini` distribution (https://docs.conda.io/en/latest/miniconda.html).
+```
+cd /path/to/Common-Data
+uv sync
+```
 
-For the miniconda distribution (recommended), you will have to install manually 
-the  required individual packages, using the `conda install` instruction:
-see section below for full example.
+The core package dependencies are:
 
-Note: if you are using another python distribution, follow the specific
-instruction for that distribution. Usually you can use `pip` for installing
-new modules: 
->> pip3 install --user attrs
-Using pip within conda is possible although not recommended. 
+ * `numpy`: numerical arrays and math
+ * `pykml`: KML parsing
+ * `shapely`: planar geometry
+ * `six`: compatibility helpers retained by the existing code
 
-The following will assume that you use `miniconda`.
+The large terrain, land-cover, county, and population data files are not bundled
+into the Python package. They remain repository data files and should be
+downloaded with Git LFS as described in the top-level README.
 
-### Required packages
+### Optional population raster support
 
-The following third party packages are required:
+The `winnf.pop.usgs_pop` module requires `GDAL`/`osgeo`, which depends on the
+native GDAL library and headers. Because those native dependencies are
+platform-sensitive, GDAL is optional rather than part of the core install:
 
- + `shapely`: geometry on the plane
- + `pykml`: for KML parsing
- + `numpy`: matlab-like numerical maths
- + `six`: compatibility model for Python3 migration
- + `gdal`: gdal/osr geo packages
+```
+uv sync --extra pop
+```
 
-### Example using miniconda
-A complete installation of all required module can be done using conda as following:
+If `GDAL` is difficult to install on a target machine, the rest of the package
+can still be used without this extra. The county population helper does not
+require `GDAL`.
 
-+ Install python 3.7 in its own environment
->> conda create -n py37 python=3.7 conda
+### Building a wheel
 
-+ Activate the newly created environment
->> conda activate py37
+To build the source distribution and wheel:
 
-+ Install packages (other dependency installed transitively)
->> conda install -c conda-forge shapely
->> conda install -c conda-forge numpy
->> conda install -c conda-forge gdal
->> pip3 install pykml
->> pip3 install six
->> etc...
+```
+uv run python -m build
+```
 
-+ work & play ...
-
-+ After finishing work, go back to system level python
->> conda deactivate
-
-
-### Compilation
-
-The provided propagation models require compilation.
-
-Follow the instructions in the README.md file for your achitecture at:
-  [winnf/propag/itm/README.md](winnf/propag/itm/README.md)
-
-
-### Module visibility 
-
-Make sure that the `winnf` package is in a directory specified in your `PYTHONPATH`.
-
-Another option is to locally install the `winnf` package, by using the `pip` utility:
- - go into the top `Common-Data/src/` directory
- - `pip3 install .`
-
-==> This will install the package locally in your computer into the appropriate installation directory.
+The wheel contains the Python code and compiled propagation extensions. It does
+not include the large Common-Data LFS data directories.
 
 ### Running all unit tests
 
-All unit test can be run as following from the top directory:
+Run the unit tests from the repository root:
 
->> python3 -m unittest discover -p '*_test.py'
+```
+uv run python run_all_tests.py
+```
 
-or simply using the shell script:
+Some population raster tests are skipped unless `GDAL`/`osgeo` is installed.
 
->> [./run_all_tests.sh](winnf/run_all_tests.sh)
+### Legacy/manual compilation notes
 
-
+The package build compiles the propagation extensions automatically. The legacy
+manual build notes are still available for troubleshooting at:
+  [winnf/propag/itm/README.md](winnf/propag/itm/README.md)

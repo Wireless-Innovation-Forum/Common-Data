@@ -17,16 +17,23 @@ import unittest
 
 import numpy as np
 
-from winnf.pop import usgs_pop
+try:
+  from winnf.pop import usgs_pop
+except ModuleNotFoundError as err:
+  if err.name != 'osgeo':
+    raise
+  usgs_pop = None
 
-TESTDATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                            'testdata')
+TESTDATA_DIR = (os.path.join(os.path.dirname(usgs_pop.__file__), 'testdata')
+                if usgs_pop is not None else None)
 
 
 class UsgsPopTest(unittest.TestCase):
 
   def setUp(self):
     self.longMessage = True
+    if usgs_pop is None:
+      self.skipTest('GDAL/osgeo is not installed')
 
   def testLoadWrongDirRaiseException(self):
     with self.assertRaises(ValueError):

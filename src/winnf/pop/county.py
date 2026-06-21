@@ -15,7 +15,8 @@
 """Driver for access to County data."""
 import json
 import os
-from reference_models.geo import CONFIG
+
+import winnf
 
 class CountyDriver(object):
   def __init__(self, county_directory=None):
@@ -25,7 +26,7 @@ class CountyDriver(object):
     """Configures the County data directory."""
     self._county_directory = county_directory
     if self._county_directory is None:
-      self._county_directory = CONFIG.GetCountyDir()
+      self._county_directory = winnf.GetCountyDir()
 
   def GetCounty(self, fips_code):
     """Returns the county (as a Python object) for the given FIPS code (as a str)."""
@@ -39,4 +40,3 @@ class CountyDriver(object):
           raise IOError('Error occurred in opening County File: %s' % county_file.name)
     else:
       raise Exception("County data not found with FIPS Code: %s" % fips_code)
-

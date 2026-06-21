@@ -12,11 +12,7 @@ Some of the larger geodata files are stored with Git LFS (Large File Storage) an
 The full checked-out data set is about 55 GB in size.
 Please clone the full data set only when needed.
 
-Git LFS objects are served from Cloudflare R2 through the Cloudflare Workers endpoint configured in [.lfsconfig](.lfsconfig):
-
-```
-https://winnforum-lfs.winnforum.workers.dev/info/lfs
-```
+Git LFS objects are served from Cloudflare R2 through the Cloudflare Workers endpoint 
 
 If an LFS download fails with an object-not-found or access error, please contact:
   https://github.com/glossner
@@ -32,6 +28,15 @@ the full binary files using the Git command line.
 
 A Python package is provided for reading and working with the geo data.
 This package provides a number of subpackages of interest for WInnForum projects.
+The package is installed from the repository root using `uv` and the root
+`pyproject.toml`; it does not package the large LFS data files.
+
+For a local developer install:
+
+```
+    uv sync
+    uv run python run_all_tests.py
+```
 
 See dedicated [src/README.md](src/README.md) for a complete description.
 
@@ -199,7 +204,7 @@ An updated version of some of the tiles are provided with the prefix usgs_ned_1_
 NOTE: This reference data corresponds to a snapshot of the latest USGS data available from July 2017.
 
 The data is read by the NED terrain driver found in `src/winnf/geo/terrain.py`, 
-and in particular is used by the WInnForum reference propagation models in `src/winnf/propagation`.
+and in particular is used by the WInnForum reference propagation models in `src/winnf/propag`.
 
 Header files are provided for enabling the data to be displayed on any GIS tool.
 

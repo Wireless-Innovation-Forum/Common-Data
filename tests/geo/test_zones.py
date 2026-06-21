@@ -22,7 +22,7 @@ from winnf.geo import zones
 import winnf
 
 winnf.SetGeoBaseDir(
-    os.path.join(os.path.dirname(os.path.realpath(__file__)),
+    os.path.join(os.path.dirname(os.path.realpath(zones.__file__)),
                  '..', '..', '..', 'data'))
 
 
@@ -50,7 +50,7 @@ class TestZones(unittest.TestCase):
     # Official length of main and alaska are resp 3987 miles and 1538 miles
     exp_borders_length = sum(np.array([3987, 1538]) * 1.60934)
     approx_len = 0
-    for j, border in enumerate(borders):
+    for j, border in enumerate(borders.geoms):
       points = list(zip(*border.xy))
       for k in range(len(points)-1):
         if points[k][0] > -67.8 and points[k][1] < 44.77:

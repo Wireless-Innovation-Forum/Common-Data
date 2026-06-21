@@ -23,7 +23,7 @@ import six
 from winnf.geo import utils
 
 
-TEST_DIR = os.path.join(os.path.dirname(__file__),'testdata', 'json')
+TEST_DIR = os.path.join(os.path.dirname(utils.__file__), 'testdata', 'json')
 
 
 class TestUtils(unittest.TestCase):

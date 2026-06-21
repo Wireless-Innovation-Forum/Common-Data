@@ -1,0 +1,13 @@
+include README.md
+include run_all_tests.py
+include src/README.md
+include src/LICENSE
+include pyproject.toml
+include setup.py
+
+recursive-include src/winnf/propag *.cpp *.h
+recursive-include src/winnf/geo/testdata *
+recursive-include src/winnf/pop/testdata *
+recursive-include src/winnf/propag/ehata/its/test *
+include src/winnf/pop/README.md
+recursive-include tests *.py

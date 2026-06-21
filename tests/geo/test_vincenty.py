@@ -20,6 +20,14 @@ import pygc
 from winnf.geo import vincenty
 
 
+def _Scalar(value):
+  return np.asarray(value).item()
+
+
+def _AngleDelta(angle1, angle2):
+  return (angle1 - angle2 + 180) % 360 - 180
+
+
 def geodesic_iterative(lat1, lon1, lat2, lon2, num_points):
   """Original function using a dual iterative approach."""
   geodesic = [(lat1, lon1)]
@@ -54,9 +62,9 @@ class TestVincenty(unittest.TestCase):
       p = pygc.great_distance(start_latitude=lat1, start_longitude=lng1,
                               end_latitude=lat2, end_longitude=lng2)
 
-      self.assertAlmostEqual(d*1000.0, p['distance'], 2)  # cm precision
-      self.assertAlmostEqual(az, p['azimuth'], 9)
-      self.assertAlmostEqual(rev_az, p['reverse_azimuth'], 9)
+      self.assertAlmostEqual(d*1000.0, _Scalar(p['distance']), 2)  # cm precision
+      self.assertAlmostEqual(_AngleDelta(az, _Scalar(p['azimuth'])), 0, 9)
+      self.assertAlmostEqual(_AngleDelta(rev_az, _Scalar(p['reverse_azimuth'])), 0, 9)
 
   def test_point(self):
     random.seed(69)
@@ -69,9 +77,9 @@ class TestVincenty(unittest.TestCase):
       latd, lngd, rev_az = vincenty.GeodesicPoint(lat, lng, dist/1000.0, bearing)
       self.assertTrue(rev_az >= 0 and rev_az < 360)
       p = pygc.great_circle(latitude=lat, longitude=lng, distance=dist, azimuth=bearing)
-      self.assertAlmostEqual(latd, p['latitude'])
-      self.assertAlmostEqual(lngd, p['longitude'])
-      self.assertAlmostEqual(rev_az, p['reverse_azimuth'])
+      self.assertAlmostEqual(latd, _Scalar(p['latitude']))
+      self.assertAlmostEqual(_AngleDelta(lngd, _Scalar(p['longitude'])), 0)
+      self.assertAlmostEqual(_AngleDelta(rev_az, _Scalar(p['reverse_azimuth'])), 0)
 
   def test_points(self):
     distances = [5,10,50, 100, 500, 1000, 5000]

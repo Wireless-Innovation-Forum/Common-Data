@@ -35,6 +35,14 @@ _EQUATORIAL_DIST_PER_DEGREE = 2 * np.pi * _WGS_EQUATORIAL_RADIUS_KM2 / 360
 _POLAR_DIST_PER_DEGREE = 2 * np.pi * _WGS_POLAR_RADIUS_KM2 / 360
 
 
+def _MultiPoint(points):
+  return sgeo.MultiPoint(list(points))
+
+
+def _GeometryParts(geometry):
+  return getattr(geometry, 'geoms', geometry)
+
+
 def HasCorrectGeoJsonWinding(geometry):
   """Returns True if a GeoJSON geometry has correct windings.
 
@@ -303,11 +311,9 @@ def GeometryArea(geometry, merge_geometries=False):
     if merge_geometries:
       geometry = ops.unary_union(geometry)
       # Test if dissolved into a simple geometry.
-      try:
-        iter(geometry)
-      except TypeError:
+      if not hasattr(geometry, 'geoms'):
         return GeometryArea(geometry)
-    return sum(GeometryArea(simple_shape) for simple_shape in geometry)
+    return sum(GeometryArea(simple_shape) for simple_shape in _GeometryParts(geometry))
 
 
 def _ProjectEqc(geometry, ref_latitude=None):
@@ -390,15 +396,15 @@ def GridPolygon(poly, res_arcsec):
   """
   poly = ToShapely(poly)
   bound_area = (poly.bounds[2] - poly.bounds[0]) * (poly.bounds[3] - poly.bounds[1])
-  if not poly:
+  if poly.is_empty:
     return []
   if isinstance(poly, sgeo.MultiPolygon) and poly.area < bound_area * 0.01:
     # For largely disjoint polygons, we process per polygon
     # to avoid inefficiencies if polygons largely disjoint.
     pts = ops.unary_union(
-        [sgeo.asMultiPoint(GridPolygon(p, res_arcsec))
-         for p in poly])
-    return [(p.x, p.y) for p in pts]
+        [_MultiPoint(GridPolygon(p, res_arcsec))
+         for p in _GeometryParts(poly)])
+    return [(p.x, p.y) for p in _GeometryParts(pts)]
 
   res = res_arcsec / 3600.
   bounds = poly.bounds
@@ -419,12 +425,12 @@ def GridPolygon(poly, res_arcsec):
   points = np.vstack((mesh_lng.ravel(), mesh_lat.ravel())).T
   # Performs slight buffering by 1mm to include border points in case they fall
   # exactly on a multiple of 1 arcsec.
-  pts = poly.buffer(1e-8).intersection(sgeo.asMultiPoint(points))
-  if not pts:
+  pts = poly.buffer(1e-8).intersection(_MultiPoint(points))
+  if pts.is_empty:
     return []
   if isinstance(pts, sgeo.Point):
     return [(pts.x, pts.y)]
-  return [(p.x, p.y) for p in pts]
+  return [(p.x, p.y) for p in _GeometryParts(pts)]
 
 
 def GridPolygonMetric(poly, res_km):
@@ -453,9 +459,9 @@ def GridPolygonMetric(poly, res_km):
     # For largely disjoint polygons, we process per polygon
     # to avoid inefficiencies if polygons largely disjoint.
     pts = ops.unary_union(
-        [sgeo.asMultiPoint(GridPolygonMetric(p, res_km))
-         for p in poly])
-    return [(p.x, p.y) for p in pts]
+        [_MultiPoint(GridPolygonMetric(p, res_km))
+         for p in _GeometryParts(poly)])
+    return [(p.x, p.y) for p in _GeometryParts(pts)]
 
   # Note: using as reference the min latitude, ie actual resolution < res_km.
   # This is to match NTIA procedure.
@@ -481,10 +487,12 @@ def GridPolygonMetric(poly, res_km):
   points = np.vstack((mesh_lng.ravel(), mesh_lat.ravel())).T
   # Performs slight buffering by 1mm to include border points in case they fall
   # exactly on a multiple of
-  pts = poly.buffer(1e-8).intersection(sgeo.asMultiPoint(points))
+  pts = poly.buffer(1e-8).intersection(_MultiPoint(points))
+  if pts.is_empty:
+    return []
   if isinstance(pts, sgeo.Point):
     return [(pts.x, pts.y)]
-  return [(p.x, p.y) for p in pts]
+  return [(p.x, p.y) for p in _GeometryParts(pts)]
 
 
 def SampleLine(line, res_km, ref_latitude=None,
@@ -505,13 +513,14 @@ def SampleLine(line, res_km, ref_latitude=None,
   line = ToShapely(line)
   proj_line, ref_latitude = _ProjectEqc(line, ref_latitude)
   if not equal_intervals:
-    points = sgeo.MultiPoint(
+    points = _MultiPoint(
         [proj_line.interpolate(dist)
          for dist in np.arange(0, ratio * proj_line.length - 1e-6, res_km)])
   else:
     n_intervals = ratio * proj_line.length // res_km
-    points = sgeo.MultiPoint(
+    points = _MultiPoint(
         [proj_line.interpolate(dist)
          for dist in np.linspace(0, ratio * proj_line.length, n_intervals)])
   points = _InvProjectEqc(points, ref_latitude)
-  return [(round(p.x, precision), round(p.y, precision)) for p in points]
+  return [(round(p.x, precision), round(p.y, precision))
+          for p in _GeometryParts(points)]

@@ -1,8 +1,17 @@
 # Compiled python modules.
 *.pyc
+*.pyd
+*.so
+__pycache__/
 
 # Setuptools distribution folder
 /dist/
+/build/
+/*.egg-info/
+/src/*.egg-info/
 
 # Backup files
 *~
+
+# Local Python environments.
+/.venv/
