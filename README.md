@@ -99,12 +99,39 @@ repository, the large LFS-tracked zip files are under [data/ned/](data/ned) and
 The population raster data are currently not provided, although the `usgs_pop`
 driver is provided as part of the `winnf` package.
 
-To integrate population data:
+The public USGS population rasters can be downloaded from ScienceBase using the
+provided helper script. First install the Python environment:
 
-1. Download the population data, preferably `pden_2010.zip`, from:
-   https://www.sciencebase.gov/catalog/item/57753ebee4b07dd077c70868
+If `uv` is not installed yet, install it with the official standalone installer:
 
-2. Unzip the data and put the `pden2010_block/` folder into [data/pop/](data/pop).
+```
+# macOS and Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows PowerShell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+```
+uv sync
+```
+
+List the available population raster years:
+
+```
+uv run python scripts/download_population.py
+```
+
+Download and extract a specific year, usually 2010:
+
+```
+uv run python scripts/download_population.py 2010
+```
+
+The script downloads from the USGS ScienceBase item at
+https://www.sciencebase.gov/catalog/item/57753ebee4b07dd077c70868 and writes
+the zip file and extracted `pdenYYYY_block/` folder under [data/pop/](data/pop)
+by default.
 
 ### Data integration into SAS
 

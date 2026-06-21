@@ -4,6 +4,9 @@ include src/README.md
 include src/LICENSE
 include pyproject.toml
 include setup.py
+include data/extract_geo.py
+include scripts/download_population.py
+include scripts/extract_counties_json.py
 
 recursive-include src/winnf/propag *.cpp *.h
 recursive-include src/winnf/geo/testdata *

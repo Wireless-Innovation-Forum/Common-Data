@@ -81,6 +81,15 @@ If `GDAL` is difficult to install on a target machine, the rest of the package
 can still be used without this extra. The county population helper does not
 require `GDAL`.
 
+Population raster files can be downloaded from USGS ScienceBase with the
+top-level helper script:
+
+```
+uv sync
+uv run python scripts/download_population.py
+uv run python scripts/download_population.py 2010
+```
+
 ### Building a wheel
 
 To build the source distribution and wheel:

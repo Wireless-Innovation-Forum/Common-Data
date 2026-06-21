@@ -15,6 +15,7 @@ authors = [
 dependencies = [
   "numpy>=1.26",
   "pykml>=0.2",
+  "sciencebasepy>=2.0.5",
   "shapely>=1.7",
   "six>=1.16",
 ]
