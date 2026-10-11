@@ -38,10 +38,12 @@ There are only a few changes compared to the original ITM code:
 
 
 ## Running the tests
-To run the original ITS test set, first compile le python extension module,
-then run the `itm_test.py` module:
+To build the extension and run the original ITS test set from the repository root:
 
-    `python itm_test.py`
+```sh
+uv sync --locked --extra test
+uv run --locked --extra test python -m unittest tests.propag.itm.test_itm
+```
 
 
 ## Thread safety

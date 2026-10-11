@@ -122,7 +122,7 @@ def ConvertShapefilesToGeoJson(counties_directory):
 
   except Exception as err:
     raise Exception("There is an issue in ConvertShapefilesToGeoJson: %s"
-                    % err.message)
+                    % err) from err
 
 
 def SplitCountiesGeoJsonFile(counties_directory):
@@ -169,7 +169,7 @@ def SplitCountiesGeoJsonFile(counties_directory):
 
   except Exception as err:
     raise Exception("There is issue in spliting counties file : %s"
-                    % err.message)
+                    % err) from err
 
 
 if __name__ == '__main__':

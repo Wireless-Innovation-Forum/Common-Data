@@ -18,7 +18,8 @@
 
 import os
 
-from six.moves import urllib
+import urllib.parse
+import urllib.request
 
 
 # Retrieve the url passed to the current directory. Writes the file using

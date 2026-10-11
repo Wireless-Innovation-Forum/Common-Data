@@ -9,8 +9,20 @@ those data.
 
 You DO NOT need to run the scripts unless you want to verify the process.
 
-Note: the sripts are supporting both Python2 and Python3, but the
-original data were generated using Python2.
+The scripts use Python 3.11 or newer; the original data were generated using
+Python 2. Run every command below from the `Common-Data` repository root.
+Install Python and the optional processing tools with:
+
+```sh
+uv python install 3.15.0
+uv sync --locked --extra scripts
+```
+
+NLCD raster processing also requires the `pop` extra and a matching native GDAL
+installation; use `uv sync --locked --extra scripts --extra pop` for that
+environment. Historical retrieval URLs may no longer be available; keep using
+the published data snapshot for
+conformance testing.
 
 ## Process for creating NED terrain database
 
@@ -56,19 +68,19 @@ So this process shall be done after a snapshot of the NED terrain tile is built.
 ## Process for recreating counties GeoJSON
 we have two options to get the county data:
 	1.extracting the converted zipped files, which are in "https://github.com/Wireless-Innovation-Forum/Spectrum-Access-System/tree/master/data/counties/ manually or by running:
-		`$ python extract_counties_json.py --extract`
+		`uv run --locked --extra scripts python scripts/extract_counties_json.py --extract`
 	2.Convert and split the raw county data file from https://github.com/Wireless-Innovation-Forum/Common-Data/tree/master/data/counties/2017_county_boundaries_raw_data.zip, this file was downloaded from the source https://fcc.maps.arcgis.com/home/item.html?id=19cd330160eb4297b58bc8dccd49a61a which is referenced on https://www.fcc.gov/35-ghz-band-overview 
 		for this option we need to convert this source file to individual geojson county files by providing the
 	 command line option --convert
-		`$ python extract_counties_json.py --convert`
+		`uv run --locked --extra scripts python scripts/extract_counties_json.py --convert`
 		
 the resulted json files should be placed in https://github.com/Wireless-Innovation-Forum/Spectrum-Access-System/tree/master/data/counties
 
 ### Usage and Sample Output
    <pre>
    <code>
-   <b> $ python extract_counties_json.py -h </b>
-   usage: extract_counties_json.py [-h] (--extract | --convertt)
+   <b> uv run --locked --extra scripts python scripts/extract_counties_json.py -h </b>
+   usage: extract_counties_json.py [-h] (--extract | --convert)
 
    optional arguments:
        -h, --help  show this help message and exit
@@ -120,4 +132,3 @@ together the following KML/KMZ files:
   - `data/zones/parts/us_mex_boundary_kmz`: the US-Mexico border.
   - `data/zones/parts/USMaritimeLimitsAndBoundariesKML.kmz`: The maritime boundaries.
   
-

@@ -27,7 +27,7 @@ def _print_optional_dependency_skips(result: unittest.TestResult) -> None:
       "\nNote: "
       f"{len(gdal_skips)} population raster {test_word} skipped because "
       "GDAL/osgeo is optional and is not installed. "
-      "Install it with `uv sync --extra pop` to enable these tests.",
+      "Install it with `uv sync --locked --extra pop` to enable these tests.",
       file=sys.stderr,
   )
 

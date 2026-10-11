@@ -56,15 +56,15 @@ def FindArcFloatFilenames(usgs):
   matches = []
   for f in files:
     filematch = False
-    if re.match('USGS_NED_1_[ns]\d{1,3}[ew]\d{1,3}_GridFloat.zip$', f):
+    if re.match(r'USGS_NED_1_[ns]\d{1,3}[ew]\d{1,3}_GridFloat.zip$', f):
       filematch = True
-    if re.match('[ns]\d{1,3}[ew]\d{1,3}.zip$', f):
+    if re.match(r'[ns]\d{1,3}[ew]\d{1,3}.zip$', f):
       filematch = True
 
     if not filematch:
       continue
 
-    m = re.search('.*?([ns])(\d{1,3})([ew])(\d{1,3}).*?', f)
+    m = re.search(r'.*?([ns])(\d{1,3})([ew])(\d{1,3}).*?', f)
     lat = 0
     lng = 0
     if m:
@@ -102,7 +102,7 @@ def FindArcFloatFilenames(usgs):
 
 # Extract the Arcfloat and headers and zip them
 def ExtractArcFloatToZip(fname, out_dir):
-  m = re.search('.*?([ns])(\d{1,3})([ew])(\d{1,3}).*?', fname)
+  m = re.search(r'.*?([ns])(\d{1,3})([ew])(\d{1,3}).*?', fname)
   tile_name = '%s%s%s%s' % (m.group(1), m.group(2), m.group(3), m.group(4))
   if fname.startswith('USGS_NED'):
     basename = 'usgs_ned_1_%s' % (tile_name)

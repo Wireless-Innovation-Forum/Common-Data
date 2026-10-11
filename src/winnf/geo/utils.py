@@ -24,9 +24,6 @@ import shapely.geometry as sgeo
 import shapely.ops as ops
 from shapely import affinity
 
-import six
-
-
 # Earth ellipsoidal parameters.
 _EARTH_MEAN_RADIUS_KM = 6371.0088  # By IUGG
 _WGS_EQUATORIAL_RADIUS_KM2 = 6378.137
@@ -55,7 +52,7 @@ def HasCorrectGeoJsonWinding(geometry):
   Raises:
     ValueError: If invalid input or GeoJSON geometry type.
   """
-  if isinstance(geometry, six.string_types):
+  if isinstance(geometry, str):
     geometry = json.loads(geometry)
   if not isinstance(geometry, dict) or 'type' not in geometry:
     raise ValueError('Invalid GeoJSON geometry.')
@@ -104,7 +101,7 @@ def InsureGeoJsonWinding(geometry):
     return geometry
 
   is_str = False
-  if isinstance(geometry, six.string_types):
+  if isinstance(geometry, str):
     geometry = json.loads(geometry)
     is_str = True
   if not isinstance(geometry, dict) or 'type' not in geometry:
@@ -149,7 +146,7 @@ def _GeoJsonToShapelyGeometry(geometry):
   Raises:
     ValueError: If invalid GeoJSON geometry is passed.
   """
-  if isinstance(geometry, six.string_types):
+  if isinstance(geometry, str):
     geometry = json.loads(geometry)
   if not isinstance(geometry, dict) or 'type' not in geometry:
     raise ValueError('Invalid GeoJSON geometry.')
@@ -204,7 +201,7 @@ def InsureFeatureCollection(geometry, as_dict=False):
     geometry: A geojson geometry, either as dict or str. Can be any type
       of GeoJSON: standard geometry, feature or feature collection.
   """
-  if isinstance(geometry, six.string_types):
+  if isinstance(geometry, str):
     geometry = json.loads(geometry)
   if 'type' not in geometry:
     raise ValueError('Invalid GeoJSON geometry.')
@@ -366,10 +363,15 @@ def Buffer(geometry, distance_km, ref_latitude=None, **kwargs):
     ref_latitude: A reference latitude for the Eqc projection. If None, using
       the centroid of the geometry.
     **kwargs: The optional parameters forwarded to the shapely `buffer` routine:
-      (for example: resolution, cap_style, join_style)
+      (for example: quad_segs, cap_style, join_style). The previous `resolution`
+      keyword remains accepted as an alias for `quad_segs`. A non-None
+      `resolution` takes precedence when both keywords are supplied.
   """
   geom = ToShapely(geometry)
   proj_geom, ref_latitude = _ProjectEqc(geom, ref_latitude)
+  resolution = kwargs.pop('resolution', None)
+  if resolution is not None:
+    kwargs['quad_segs'] = resolution
   proj_geom = proj_geom.buffer(distance_km, **kwargs)
   geom = _InvProjectEqc(proj_geom, ref_latitude)
   if isinstance(geometry, sgeo.base.BaseGeometry):

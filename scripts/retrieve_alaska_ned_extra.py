@@ -57,15 +57,15 @@ def FindArcFloatFilenames(usgs):
   matches = []
   for f in files:
     filematch = False
-    if re.match('USGS_NED_2_[ns]\d{1,3}[ew]\d{1,3}_GridFloat.zip$', f):
+    if re.match(r'USGS_NED_2_[ns]\d{1,3}[ew]\d{1,3}_GridFloat.zip$', f):
       filematch = True
-    if re.match('[ns]\d{1,3}[ew]\d{1,3}.zip$', f):
+    if re.match(r'[ns]\d{1,3}[ew]\d{1,3}.zip$', f):
       filematch = True
 
     if not filematch:
       continue
 
-    m = re.search('.*?([ns])(\d{1,3})([ew])(\d{1,3}).*?', f)
+    m = re.search(r'.*?([ns])(\d{1,3})([ew])(\d{1,3}).*?', f)
     lat = 0
     lng = 0
     if m:
@@ -103,7 +103,7 @@ def FindArcFloatFilenames(usgs):
 # Check if a filename corresponds to a preexisting tile
 def AlreadyExistInDatabase(filename, ref_dir):
   # Detect the tile info
-  m = re.search('.*?([ns])(\d{1,3})([ew])(\d{1,3}).*?', filename)
+  m = re.search(r'.*?([ns])(\d{1,3})([ew])(\d{1,3}).*?', filename)
   if not m:
     raise Exception('Could not find lat,lng for %s' % f)
   # Check if preexisting tile at 1 arcsec
@@ -121,7 +121,7 @@ def AlreadyExistInDatabase(filename, ref_dir):
 
 # Extract the Arcfloat and headers, resample and zip them
 def ExtractArcFloatToZipAndResample(fname, out_dir, new_download):
-  m = re.search('.*?([ns])(\d{1,3})([ew])(\d{1,3}).*?', fname)
+  m = re.search(r'.*?([ns])(\d{1,3})([ew])(\d{1,3}).*?', fname)
   tile_name = '%s%s%s%s' % (m.group(1), m.group(2), m.group(3), m.group(4))
   # Ignore the tile if at -180degree, as these ones need special processing
   # (different padding)

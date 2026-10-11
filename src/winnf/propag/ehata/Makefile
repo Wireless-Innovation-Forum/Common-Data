@@ -1,4 +1,3 @@
-PYTHON2	?= python
 PYTHON3	?= python3
 SETUP	:= setup.py
 

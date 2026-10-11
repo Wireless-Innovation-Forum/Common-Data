@@ -5,9 +5,9 @@ from sysconfig import get_config_vars
 if __name__ == "__main__" and len(sys.argv) == 1:
   print(
       "setup.py is used by the PEP 517 build backend.\n"
-      "Use `uv sync` to install the package, "
-      "`uv run python run_all_tests.py` to test it, or "
-      "`uv run python -m build` to build distributions.",
+      "Use `uv sync --locked` to install the package, "
+      "`uv run --locked --extra test python run_all_tests.py` to test it, or "
+      "`uv build` to build distributions.",
       file=sys.stderr,
   )
   raise SystemExit(2)
