@@ -22,8 +22,7 @@ to produce official Winnforum version. It has not been tested if the new links
 would produce exactly the same output.
 """
 import os
-import ssl
-from six.moves import urllib
+import urllib.request
 
 
 # Retrieves a resource via HTTP using urllib. Writes it to the filename
@@ -38,8 +37,7 @@ def RetrieveHTTPFile(resource, force=False, write_file=''):
     print('Resource %s already retrieved' % resource)
     return
 
-  context = ssl._create_unverified_context()
-  f = urllib.request.urlopen(resource, context=context)
+  f = urllib.request.urlopen(resource)
   if f.getcode() != 200:
     raise Exception('Could not find resource %s' % resource)
   with open(write_file, 'wb') as out:

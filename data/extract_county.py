@@ -44,6 +44,5 @@ def ExtractData(directory):
 geo_dir = os.path.dirname(os.path.realpath(__file__))
 
 county_dir = os.path.join(geo_dir, 'counties')
-print 'Extracting County data files from zip files in dir=%s' % county_dir
+print('Extracting County data files from zip files in dir=%s' % county_dir)
 ExtractData(county_dir)
-

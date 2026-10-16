@@ -14,11 +14,11 @@
 import os
 import unittest
 import json
+import warnings
 
 import numpy as np
 import shapely.geometry as sgeo
 from shapely import ops
-import six
 
 from winnf.geo import utils
 
@@ -200,7 +200,7 @@ class TestUtils(unittest.TestCase):
 
     poly_str = json.dumps(poly_with_hole)
     corr_poly = utils.InsureGeoJsonWinding(poly_str)
-    self.assertIsInstance(corr_poly, six.string_types)
+    self.assertIsInstance(corr_poly, str)
     self.assertDictEqual(json.loads(corr_poly), poly_with_hole)
 
   def test_json_multicollection_correct_winding(self):
@@ -277,6 +277,31 @@ class TestUtils(unittest.TestCase):
     circle = utils.Buffer(pt, 20, resolution=256)
     area = utils.GeometryArea(circle)
     self.assertLess(np.abs(area - np.pi*20**2), 0.001 * area)
+
+  def test_buffer_resolution_alias(self):
+    pt = sgeo.Point(-110, 40)
+    expected = utils.Buffer(pt, 20, quad_segs=16)
+    for geometry in (pt, utils.ToGeoJson(pt), utils.ToGeoJson(pt, as_dict=True)):
+      with self.subTest(geometry_type=type(geometry).__name__):
+        with warnings.catch_warnings():
+          warnings.simplefilter('error')
+          actual = utils.Buffer(geometry, 20, resolution=16)
+        self.assertTrue(utils.ToShapely(actual).equals_exact(expected, 0))
+
+  def test_buffer_resolution_precedence(self):
+    pt = sgeo.Point(-110, 40)
+    expected = utils.Buffer(pt, 20, quad_segs=16)
+    self.assertFalse(expected.equals_exact(utils.Buffer(pt, 20, quad_segs=4), 0))
+    for kwargs in ({'quad_segs': 4, 'resolution': 16},
+                   {'quad_segs': 16, 'resolution': 16},
+                   {'quad_segs': 16, 'resolution': None}):
+      with self.subTest(kwargs=kwargs):
+        with warnings.catch_warnings():
+          warnings.simplefilter('error')
+          actual = utils.Buffer(pt, 20, **kwargs)
+        self.assertTrue(actual.equals_exact(expected, 0))
+    self.assertTrue(utils.Buffer(pt, 20, resolution=None).equals_exact(
+        utils.Buffer(pt, 20), 0))
 
   def test_buffer_poly(self):
     pt = sgeo.Point(-110, 40)

@@ -21,6 +21,28 @@ then run the extraction scripts below.
 
 ## User guide
 
+### Set up Python
+
+Install `uv` once per machine with the official standalone installer:
+
+```sh
+# macOS and Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows PowerShell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+Install the stable Python version used by this repository:
+
+```sh
+uv python install 3.15.0
+```
+
+Run the commands below from the `Common-Data` repository root. Data extraction
+uses uv's standalone mode and Python's standard library. Library installation
+is described in the [developer guide](#developer-guide).
+
 ### Get the data
 
 The full checked-out and extracted data set is about 55 GB. Clone the full data
@@ -42,13 +64,13 @@ cd Common-Data
 Extract the NED terrain and NLCD land-cover files:
 
 ```
-python data/extract_geo.py
+uv run --no-project --python 3.15.0 python data/extract_geo.py
 ```
 
 Extract the county GeoJSON files:
 
 ```
-python scripts/extract_counties_json.py --extract
+uv run --no-project --python 3.15.0 python scripts/extract_counties_json.py --extract
 ```
 
 Do not use GitHub's "Download ZIP" button for this repository. It can leave
@@ -79,15 +101,15 @@ Then pull and extract only the directory you need:
 ```
 # NED terrain tiles
 git lfs pull --include="data/ned/*"
-python data/extract_geo.py --ned
+uv run --no-project --python 3.15.0 python data/extract_geo.py --ned
 
 # NLCD mainland tiles
 git lfs pull --include="data/nlcd/*"
-python data/extract_geo.py --nlcd
+uv run --no-project --python 3.15.0 python data/extract_geo.py --nlcd
 
 # NLCD island tiles
 git lfs pull --include="data/nlcd/nlcd_islands/*"
-python data/extract_geo.py --nlcd-islands
+uv run --no-project --python 3.15.0 python data/extract_geo.py --nlcd-islands
 ```
 
 Only LFS-tracked paths are affected by `git lfs pull --include`. In this
@@ -100,32 +122,23 @@ The population raster data are currently not provided, although the `usgs_pop`
 driver is provided as part of the `winnf` package.
 
 The public USGS population rasters can be downloaded from ScienceBase using the
-provided helper script. First install the Python environment:
-
-If `uv` is not installed yet, install it with the official standalone installer:
-
-```
-# macOS and Linux
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Windows PowerShell
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
+provided helper script. From the repository root, install the library
+environment; a C++ compiler is required to build the propagation extensions:
 
 ```
-uv sync
+uv sync --locked
 ```
 
 List the available population raster years:
 
 ```
-uv run python scripts/download_population.py
+uv run --locked python scripts/download_population.py
 ```
 
 Download and extract a specific year, usually 2010:
 
 ```
-uv run python scripts/download_population.py 2010
+uv run --locked python scripts/download_population.py 2010
 ```
 
 The script queries the ScienceBase API for DOI `doi:10.5066/F74J0C6M`, lists
@@ -233,9 +246,14 @@ data files.
 For a local developer install:
 
 ```
-uv sync
-uv run python run_all_tests.py
+uv python install 3.15.0
+uv sync --locked --extra test
+uv run --locked --extra test python run_all_tests.py
 ```
+
+The package targets Python 3.15 and retains compatibility with Python 3.11–3.14.
+A C++ compiler is needed for the ITM and E-Hata propagation extensions. To use
+an older supported interpreter, pass its version to `uv sync --python`.
 
 See [src/README.md](src/README.md) for the package details.
 
@@ -244,7 +262,7 @@ See [src/README.md](src/README.md) for the package details.
 To build the source distribution and wheel:
 
 ```
-uv run python -m build
+uv build
 ```
 
 Do not run `setup.py` directly. It is used by the package build backend; `uv`
@@ -257,7 +275,7 @@ native GDAL library and headers. Because those native dependencies are
 platform-sensitive, GDAL is optional:
 
 ```
-uv sync --extra pop
+uv sync --locked --extra pop
 ```
 
 Without GDAL, population raster tests are skipped and the rest of the package

@@ -284,7 +284,7 @@ def FindBorderSegments(doc):
           #print('  seg size %d' % len(points))
           coords = []
           for pt in points:
-            if pt is not '':
+            if pt != '':
               c = pt.split(',')
               # Trim outline near AK
               if (desc.find('B0174') != -1 and
@@ -317,7 +317,7 @@ def FindBorderSegments(doc):
               points = points[2:]
             coords = []
             for pt in points:
-              if pt is not '':
+              if pt != '':
                 c = pt.split(',')
                 coords.append('%s,%s,0' % (c[0].strip(), c[1].strip()))
             print('  have segment [%d] %s...%s' % (len(coords), coords[0], coords[-1]))
@@ -338,7 +338,7 @@ def AddBorderSegments(mexicoDoc, canadaDoc, coordinateLists):
       print('Adding US-Mex boundary size %d' % len(points))
       coords = []
       for pt in points:
-        if pt.strip() is not '':
+        if pt.strip() != '':
           c = pt.split(',')
           # Note: The furthest west point doesn't match well with the NOAA
           # boundaries. Eliminating it from the polygon creates the right
@@ -363,7 +363,7 @@ def AddBorderSegments(mexicoDoc, canadaDoc, coordinateLists):
       print('Adding %s size %d' % (p.name.text, len(points)))
       coords = []
       for pt in points:
-        if pt is not '':
+        if pt != '':
           c = pt.split(',')
           coords.append('%s,%s,0' % (c[0].strip(), c[1].strip()))
       coordinateLists.append(coords)
@@ -611,4 +611,3 @@ for ls in lineStrings:
 
 with open(os.path.join(zones_dir, 'usborder-tmp.kml'), 'w+') as outputFile:
   outputFile.write(etree.tostring(doc, encoding='utf-8', pretty_print=True).decode())
-

@@ -38,12 +38,11 @@ Typical usage:
   codes = driver.GetLandCoverCodes(lats, lons)
 """
 
-import gdal
+from osgeo import gdal, osr
 import logging
 import numpy as np
 import os
 import osgeo.gdal
-import osr
 import sys
 import time
 

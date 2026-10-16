@@ -1,29 +1,14 @@
-import sys
-from setuptools import setup, find_packages
+"""Compatibility entry point for the repository-root setuptools build.
 
-ext = 'pyd' if sys.platform == 'win32' else 'so'
+Install Common-Data from its repository root. Legacy callers of src/setup.py
+still get the same package metadata and compiled propagation extensions.
+"""
 
-setup(name='winnf',
-      version='1.0',
-      description='Winnforum Commons',
-      author='Winnforum Authors',
-      license='Apache 2.0',
-      python_requires='>=3.9',
-      packages=find_packages(),
-      #exclude=['*_test.py']),
-      #include_package_data=True,  # Not working for some reason
-      # TODO(sbdt): review the extended data inclusion method (including C ext).
-      package_data={
-          '': ['LICENSE', '*.md'],
-          'winnf': [
-              'propag/itm/itm_it*.%s' % ext,
-              'propag/ehata/ehata_it*.%s' % ext
-          ],
-      },
-      install_requires=[
-          'numpy',
-          'pykml',
-          'shapely',
-          'six',
-      ],
-      zip_safe=False)
+import os
+from pathlib import Path
+import runpy
+
+
+project_root = Path(__file__).resolve().parent.parent
+os.chdir(project_root)
+runpy.run_path(str(project_root / "setup.py"), run_name="__main__")

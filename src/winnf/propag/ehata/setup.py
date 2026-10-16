@@ -14,11 +14,11 @@
 
 # To install the module, run 'python setup.py build_ext -i' to install
 # into the local directory. Run 'python setup.py build' to build the
-# module. See distutils documentation for more info.
+# module. The repository-root PEP 517 build is preferred.
 
-import six
-from distutils.core import Extension, setup
-from distutils.sysconfig import get_config_vars
+import sys
+from sysconfig import get_config_vars
+from setuptools import Extension, setup
 
 ehata_module = Extension('ehata_its',
                          sources = ['its/ExtendedHata.cpp',
@@ -33,12 +33,13 @@ ehata_module = Extension('ehata_its',
                                     'its/MixedPathCorrectionFactor.cpp',
                                     'its/PreprocessTerrainPath.cpp',
                                     'ehata_its_py.cpp'],
-                         extra_compile_args=['-D_hypot=hypot'])
+                         extra_compile_args=['-D_hypot=hypot'] +
+                             ([] if sys.platform == 'win32' else ['-std=c++11']))
 
 # Remove the "-Wstrict-prototypes" compiler option (not valid for C++).
 cfg_vars = get_config_vars()
 for key, value in cfg_vars.items():
-  if isinstance(value, six.string_types):
+  if isinstance(value, str):
     cfg_vars[key] = value.replace("-Wstrict-prototypes", "")
 
 

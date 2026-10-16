@@ -1,0 +1,31 @@
+name: Python compatibility
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13", "3.14", "3.15.0"]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install the selected Python version
+        run: uv python install '${{ matrix.python-version }}'
+      - name: Install package and test tools
+        run: uv sync --locked --extra test --python '${{ matrix.python-version }}'
+      - name: Check Python syntax
+        run: uv run --locked --extra test python -W error -m compileall -f -q src scripts data tests
+      - name: Run reference model and data tests
+        run: uv run --locked --extra test python -W error run_all_tests.py
+      - name: Build source distribution and native wheel
+        run: uv build

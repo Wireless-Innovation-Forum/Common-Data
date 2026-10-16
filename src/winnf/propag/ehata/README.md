@@ -51,23 +51,17 @@ or future implementations.
 
 
 ## Running the tests
-To run the origina ITS test set, first compile le python extension module,
-then run the `ehata_test.py` module:
+Build the extension and run the original ITS test set from the repository root:
 
-    `python ehata_test.py`
+```sh
+uv sync --locked --extra test
+uv run --locked --extra test python -m unittest tests.propag.ehata.test_ehata
+```
 
 
 ## Building the python extension module
 
-A Python wrapper is provided to generate a Python extension module.
-To build this extension, use the make command:
-
-    `make`
-    
-which basically runs:
-
-    `python setup.py build_ext --inplace`
-    `python3 setup.py build_ext --inplace`    
+Both propagation extensions build automatically during `uv sync`. To create
+source and wheel distributions, run `uv build` from the repository root.
 
 For Windows specific compilation, see upper level [README.md](../README.md).
-
