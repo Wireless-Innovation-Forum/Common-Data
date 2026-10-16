@@ -12,7 +12,7 @@ downloads those archives from Cloudflare R2 through the endpoint configured in
 [.lfsconfig](.lfsconfig):
 
 ```
-https://winnforum-lfs.winnforum.workers.dev/info/lfs
+https://data.winnforum.org/info/lfs
 ```
 
 Users do not normally download from Cloudflare directly. Use Git and Git LFS,
